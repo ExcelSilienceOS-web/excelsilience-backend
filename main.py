@@ -72,6 +72,51 @@ def process_cap0(data: Cap0Data):
     )
     
     return {
+   # 5. Rota do Capítulo 1 (Cálculo do IDS e ADC)
+class Cap1Data(BaseModel):
+    pilot_id: str
+
+@app.post("/api/v1/cap1_diagnostico")
+def process_cap1(data: Cap1Data):
+    # 1. Puxa a memória do piloto no banco
+    pilot = pilots_collection.find_one({"pilot_id": data.pilot_id})
+    
+    if not pilot or "vsi_10" not in pilot or "esi_cap0" not in pilot:
+        return {"erro": "Faltam dados de telemetria. Conclua a Introdução e o Capítulo 0."}
+    
+    vsi = pilot["vsi_10"]
+    esi = pilot["esi_cap0"]
+    
+    # 2. Calcula o Índice de Dissimulação Somática (IDS)
+    ids = abs(vsi - esi)
+    
+    # 3. Trava de Segurança (Veto Biológico)
+    # Se a discrepância entre mente e corpo for maior que 2.0, o sistema trava.
+    if ids > 2.0:
+        status_veto = "VETO BIOLÓGICO ATIVADO. Autoengano detectado."
+        adc = 0.0 # O piloto perde a capacidade de decisão sob caos
+    else:
+        status_veto = "SISTEMA LIBERADO. Alinhamento somático verificado."
+        # Matemática simplificada do ADC (Exemplo de baseline)
+        adc = (vsi + esi) / 2
+        
+    # 4. Grava o resultado no chassi do piloto
+    pilots_collection.update_one(
+        {"pilot_id": data.pilot_id},
+        {"$set": {
+            "ids": ids,
+            "adc": adc,
+            "status_veto": status_veto
+        }}
+    )
+    
+    return {
+        "status": "Diagnóstico do Capítulo 1 Concluído",
+        "pilot_id": data.pilot_id,
+        "ids": ids,
+        "veto_biologico": status_veto,
+        "adc_score": adc
+    } 
         "status": "sucesso",
         "mensagem": "Diagnóstico ESI calculado e blindado no cache.",
         "pilot_id": data.pilot_id,
