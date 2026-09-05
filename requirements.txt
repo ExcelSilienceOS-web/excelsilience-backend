@@ -4,3 +4,4 @@ pydantic
 pymongo
 dnspython
 google-genai
+google-generativeai
