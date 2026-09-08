@@ -77,11 +77,7 @@ class Cap2Data(BaseModel):
     nota_alvo: float
     modulo_alvo: str
 
-class Cap3Data(BaseModel):
-    pilot_id: str
-    email_piloto: str
-    ef_veto: float
-    eg_foco: float
+class Cap3Data(BaseModel): pilot_id: str; email_piloto: str; ef_veto: float; eg_foco: float
 
 @app.post("/api/v1/intro")
 def process_intro(data: IntroData):
