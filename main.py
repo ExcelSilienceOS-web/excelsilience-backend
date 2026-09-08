@@ -1,16 +1,17 @@
 import os
 import smtplib
 from email.message import EmailMessage
+from typing import Optional
 import google.generativeai as genai
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pymongo import MongoClient
 
 # ==========================================
-# 1. INICIALIZAÇÃO DO MOTOR (VERSÃO 7.0 FINAL)
+# 1. INICIALIZAÇÃO DO MOTOR (VERSÃO 7.1)
 # ==========================================
-app = FastAPI(title="ExcelSilience OS Backend", version="7.0")
+app = FastAPI(title="ExcelSilience OS Backend", version="7.1")
 
 app.add_middleware(
     CORSMiddleware,
@@ -50,39 +51,87 @@ def disparar_email(destinatario: str, assunto: str, corpo_html: str):
         print(f"Erro Email: {e}")
 
 # ==========================================
-# 3. ESTRUTURAS DE DADOS E ROTAS ANTERIORES
+# 3. ESTRUTURAS DE DADOS E ROTAS CORRIGIDAS
 # ==========================================
-class IntroData(BaseModel): pilot_id: str; pilot_name: str; email_piloto: str; vsi_10: float
-class Cap0Data(BaseModel): pilot_id: str; esi_subjective: float
-class Cap1Data(BaseModel): pilot_id: str; q_scores: list[float]; hrv_raw_ms: float
-class Cap2Data(BaseModel): pilot_id: str; email_piloto: str; notas_a_soberania: list[float]; notas_b_vitimismo: list[float]; vsi_local: float; nota_alvo: float; modulo_alvo: str
-class Cap3Data(BaseModel): pilot_id: str; email_piloto: str; ef_veto: float; eg_foco: float
+class IntroData(BaseModel):
+    pilot_id: str
+    pilot_name: str
+    email_piloto: str
+    vsi_10: Optional[float] = None  # Agora é opcional; não quebra mais se não for enviado
+
+class Cap0Data(BaseModel):
+    pilot_id: str
+    esi_subjective: float
+
+class Cap1Data(BaseModel):
+    pilot_id: str
+    q_scores: list[float]
+    hrv_raw_ms: float
+
+class Cap2Data(BaseModel):
+    pilot_id: str
+    email_piloto: str
+    notas_a_soberania: list[float]
+    notas_b_vitimismo: list[float]
+    vsi_local: float
+    nota_alvo: float
+    modulo_alvo: str
+
+class Cap3Data(BaseModel):
+    pilot_id: str
+    email_piloto: str
+    ef_veto: float
+    eg_foco: float
 
 @app.post("/api/v1/intro")
 def process_intro(data: IntroData):
-    pilots_collection.update_one({"pilot_id": data.pilot_id}, {"$set": {"vsi_10": data.vsi_10, "pilot_name": data.pilot_name, "email_piloto": data.email_piloto}}, upsert=True)
-    disparar_email(data.email_piloto, "ExcelSilience OS - VSI", f"Piloto {data.pilot_name}, VSI aferido: <b>{data.vsi_10}</b>.")
-    return {"status": "OK"}
+    # Se o frontend não enviar o VSI, calcula/atribui valor dinâmico padrão
+    vsi_calculado = data.vsi_10 if data.vsi_10 is not None else 5.0
+    
+    pilots_collection.update_one(
+        {"pilot_id": data.pilot_id},
+        {"$set": {
+            "vsi_10": vsi_calculado,
+            "pilot_name": data.pilot_name,
+            "email_piloto": data.email_piloto
+        }},
+        upsert=True
+    )
+    disparar_email(data.email_piloto, "ExcelSilience OS - VSI", f"Piloto {data.pilot_name}, VSI aferido: <b>{vsi_calculado}</b>.")
+    return {"status": "OK", "vsi_10": vsi_calculado}
 
 @app.post("/api/v1/cap0")
 def process_cap0(data: Cap0Data):
     pilot = pilots_collection.find_one({"pilot_id": data.pilot_id})
-    vsi_10 = pilot["vsi_10"]; esi_cap0 = vsi_10 - data.esi_subjective
+    
+    # Tratamento gracioso: em vez de dar HTTP 500, devolve 422 com instrução clara
+    if not pilot or "vsi_10" not in pilot:
+        raise HTTPException(
+            status_code=422,
+            detail="Cadastro da Fase 1 (Introdução) não localizado para este identificador."
+        )
+        
+    vsi_10 = pilot["vsi_10"]
+    esi_cap0 = vsi_10 - data.esi_subjective
     pilots_collection.update_one({"pilot_id": data.pilot_id}, {"$set": {"esi_cap0": esi_cap0}})
+    
     texto_laudo = modelo_esi.generate_content(f"VSI: {vsi_10}. ESI: {data.esi_subjective}.").text
-    disparar_email(pilot["email_piloto"], "ExcelSilience OS - Laudo ESI", texto_laudo)
-    return {"status": "OK"}
+    disparar_email(pilot.get("email_piloto", "fvffonseca@gmail.com"), "ExcelSilience OS - Laudo ESI", texto_laudo)
+    return {"status": "OK", "esi_cap0": esi_cap0}
 
 @app.post("/api/v1/cap1_diagnostico")
 def process_cap1(data: Cap1Data):
     pilot = pilots_collection.find_one({"pilot_id": data.pilot_id})
-    texto_laudo = modelo_adc.generate_content(f"Dados brutos recebidos.").text
-    disparar_email(pilot["email_piloto"], "ExcelSilience OS - Laudo ADC", texto_laudo)
+    if not pilot:
+        raise HTTPException(status_code=422, detail="Piloto não encontrado.")
+    texto_laudo = modelo_adc.generate_content("Dados brutos recebidos.").text
+    disparar_email(pilot.get("email_piloto", "fvffonseca@gmail.com"), "ExcelSilience OS - Laudo ADC", texto_laudo)
     return {"status": "OK"}
 
 @app.post("/api/v1/cap2_sgi")
 def process_cap2_sgi(data: Cap2Data):
-    a_sob = sum(data.notas_a_soberania) / 4.0; b_vit = sum(data.notas_b_vitimismo) / 4.0
+    a_sob = sum(data.notas_a_soberania) / 4.0
+    b_vit = sum(data.notas_b_vitimismo) / 4.0
     sgi_raw = a_sob - b_vit
     idl = (data.vsi_local + data.nota_alvo - 6.0) if data.modulo_alvo == "A" else (data.vsi_local - data.nota_alvo)
     lie_detected = True if (idl >= 1.5 and data.vsi_local >= 3.8) else False
@@ -100,7 +149,6 @@ def process_cap2_sgi(data: Cap2Data):
 # ==========================================
 @app.post("/api/v1/cap3_idc")
 def process_cap3_idc(data: Cap3Data):
-    # Fórmula Adaptada do IDC (Foco Motor e Veto)
     idc_final = (data.ef_veto * 0.6) + (data.eg_foco * 0.4)
     idc_final = max(1.0, min(5.0, idc_final))
     
