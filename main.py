@@ -141,33 +141,70 @@ def process_cap2_sgi(data: Cap2Data):
     return {"status": "OK", "sgi_final": sgi_final}
 
 # ==========================================
-# 4. A ROTA FINAL: CAPÍTULO 3 (IDC)
+# 4. CAPÍTULO 3 ATUALIZADO: IDC + FATOR Q (HIGUCHI)
 # ==========================================
+class Cap3Data(BaseModel):
+    pilot_id: str
+    email_piloto: str
+    ef_veto: float
+    eg_foco: float
+    raw_higuchi_d: Optional[float] = None
+    fator_q_final: Optional[float] = None
+
 @app.post("/api/v1/cap3_idc")
 def process_cap3_idc(data: Cap3Data):
+    pilot = pilots_collection.find_one({"pilot_id": data.pilot_id})
+    if not pilot:
+        raise HTTPException(status_code=422, detail="Piloto não localizado.")
+
+    # Cálculo do IDC
     idc_final = (data.ef_veto * 0.6) + (data.eg_foco * 0.4)
     idc_final = max(1.0, min(5.0, idc_final))
     
-    pilots_collection.update_one({"pilot_id": data.pilot_id}, {"$set": {"idc_final": idc_final}})
+    # Atualização no MongoDB via PyMongo
+    update_payload = {
+        "idc_final": idc_final,
+        "ef_veto": data.ef_veto,
+        "eg_foco": data.eg_foco
+    }
+    if data.fator_q_final is not None:
+        update_payload["fator_q_final"] = data.fator_q_final
+        update_payload["raw_higuchi_d"] = data.raw_higuchi_d
+
+    pilots_collection.update_one({"pilot_id": data.pilot_id}, {"$set": update_payload})
     
+    # Status da Zona
     if idc_final >= 4.0:
         zona = "🟢 CPU NO MANCHE (Domínio Pré-Frontal Soberano)"
     elif idc_final >= 2.5:
         zona = "🟡 OSCILAÇÃO DE ENERGIA (Fricção de Chassi)"
     else:
         zona = "🔴 PÂNICO DA AMÍGDALA (Id em Descontrole - Estol Biológico)"
-        
-    assunto = "ExcelSilience OS - Laudo Supremo: Índice de Domínio Cortical (IDC)"
+
+    # Disparo de Alerta Específico se o Fator Q estiver em estol (<= 1.5)
+    if data.fator_q_final is not None and data.fator_q_final <= 1.5:
+        assunto_q = "[ALERTA DE SISTEMA] Telemetria de Bordo: Fator Q em Declínio"
+        corpo_q = f"""
+        <h2>ALERTA DE ESTOL COGNITIVO</h2>
+        <p>Durante o simulador visual, seu algoritmo calculou uma Dimensão Fractal de Higuchi de <b>{data.raw_higuchi_d:.2f}</b>.</p>
+        <p>Seu Fator Q consolidado: <b>{data.fator_q_final:.2f} (Rigidez Operacional)</b>.</p>
+        <p>O cansaço acumulado paralisou as suas conexões estratégicas de alta velocidade. Execute o Protocolo de Refrigeração Cortical.</p>
+        <hr>
+        <p><i>Sovereign Diagnostic Cockpit (SDC) // ExcelSilience OS</i></p>
+        """
+        disparar_email(data.email_piloto, assunto_q, corpo_q)
+
+    # Disparo do Laudo Geral IDC
     corpo_html = f"""
     <h2>VEREDITO DE VETO MOTOR (IDC)</h2>
-    <p>A sua capacidade de inibição pré-frontal ("Free Won't") foi testada sob estresse.</p>
     <p>Eficiência de Veto: <b>{data.ef_veto:.1f}/5.0</b></p>
-    <p>Foco e Tempo de Reação: <b>{data.eg_foco:.1f}/5.0</b></p>
+    <p>Foco e Reação: <b>{data.eg_foco:.1f}/5.0</b></p>
+    <p>Fator Q (Adaptabilidade Fractal): <b>{data.fator_q_final if data.fator_q_final else 'N/A'}</b></p>
     <h3>SEU ÍNDICE DE DOMÍNIO CORTICAL (IDC): {idc_final:.1f}</h3>
     <p>Status Operacional: <b>{zona}</b></p>
     <hr>
     <p><i>Flávio's Avatar // SDC Engine // ExcelSilience OS</i></p>
     """
+    disparar_email(data.email_piloto, "ExcelSilience OS - Laudo Supremo IDC", corpo_html)
     
-    disparar_email(data.email_piloto, assunto, corpo_html)
-    return {"status": "Missão Cumprida", "idc_final": idc_final}
+    return {"status": "OK", "idc_final": idc_final, "fator_q": data.fator_q_final}
