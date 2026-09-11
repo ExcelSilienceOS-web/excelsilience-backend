@@ -208,3 +208,44 @@ def process_cap3_idc(data: Cap3Data):
     disparar_email(data.email_piloto, "ExcelSilience OS - Laudo Supremo IDC", corpo_html)
     
     return {"status": "OK", "idc_final": idc_final, "fator_q": data.fator_q_final}
+# ==========================================
+# 5. MÓDULO B2B CORPORATIVO: SRT COMPLIANCE
+# ==========================================
+import datetime
+
+# Nova coleção de banco de dados isolada para empresas
+srt_collection = client["excelsilience_db"]["srt_compliance"]
+
+class SRTData(BaseModel):
+    company_id: str
+    ghe_id: str
+    vsi_score: float
+    esi_score: float
+    adc_score: float
+    sgi_score: float
+    idc_score: float
+
+@app.post("/api/v1/srt/submit")
+def process_srt_telemetry(data: SRTData):
+    # Salvando o registro 100% anônimo focado no Setor (GHE) e Empresa
+    payload = {
+        "company_id": data.company_id,
+        "ghe_id": data.ghe_id,
+        "timestamp": datetime.datetime.utcnow().isoformat(),
+        "metrics": {
+            "vsi": data.vsi_score,
+            "esi": data.esi_score,
+            "adc": data.adc_score,
+            "sgi": data.sgi_score,
+            "idc": data.idc_score
+        }
+    }
+    
+    # Insere no banco de dados isolado
+    srt_collection.insert_one(payload)
+    
+    # Retorna o status de sucesso para o celular do operário
+    return {
+        "status": "Sinal Verde", 
+        "message": "Telemetria ocupacional registrada com sucesso."
+    }
