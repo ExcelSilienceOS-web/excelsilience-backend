@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRT Fleet — Dashboard Transportadora de Carga</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0b0f19; color: #f1f5f9; padding: 24px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid #1e293b; padding-bottom: 16px; }
+        .title { font-size: 22px; font-weight: 800; color: #10b981; }
+        .subtitle { font-size: 12px; color: #64748b; text-transform: uppercase; margin-top: 4px; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .card { background: #151c2c; border: 1px solid #2a364f; border-radius: 12px; padding: 20px; text-align: center; }
+        .card-val { font-size: 30px; font-weight: 800; margin-top: 6px; }
+        .val-green { color: #10b981; }
+        .val-blue { color: #38bdf8; }
+        .val-yellow { color: #fbbf24; }
+        .val-red { color: #f87171; }
+        .card-lbl { font-size: 11px; color: #94a3b8; text-transform: uppercase; }
+        .panel { background: #151c2c; border: 1px solid #2a364f; border-radius: 12px; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+        th { padding: 12px; color: #64748b; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #1e293b; }
+        td { padding: 12px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+        .badge-verde { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #10b981; }
+        .badge-amarelo { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid #f59e0b; }
+        .badge-vermelho { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <div class="title">SRT FLEET — PAINEL DE TELEMETRIA DE CARGA PESADA (RODOVIÁRIO)</div>
+            <div class="subtitle">Gestão de Fadiga, Sono e Conformidade com a Lei do Motorista (13.103/15)</div>
+        </div>
+    </div>
+
+    <div class="cards-grid">
+        <div class="card">
+            <div class="card-lbl">Frota em Rodovia</div>
+            <div class="card-val val-blue">340 Caminhões</div>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Conformidade Lei 13.103</div>
+            <div class="card-val val-green">99.1%</div>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Alertas Micro-Sono (Cabine)</div>
+            <div class="card-val val-yellow">14 Ocorrências</div>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Bloqueios no Posto de Apoio</div>
+            <div class="card-val val-red">3 Paradas Forçadas</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: #f8fafc;">Aferição Biométrica por Rota e Telemetria Integrada da Cabine</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Placa / Veículo</th>
+                    <th>Motorista</th>
+                    <th>Rota / Trecho</th>
+                    <th>Horas sem Descanso</th>
+                    <th>VSI Laringiano</th>
+                    <th>Status do Motorista</th>
+                    <th>Instrução para a Torre de CCO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ABC-8E90 (Scania R450)</td>
+                    <td>José Carlos Santos</td>
+                    <td>Dourados MS ➔ Santos SP</td>
+                    <td>5h 40m</td>
+                    <td>4.80 (Crítico)</td>
+                    <td><span class="badge badge-vermelho">🔴 RISCO ELEVADO DE TOMBAMENTO</span></td>
+                    <td>Orientar parada imediata no Posto Graal km 240</td>
+                </tr>
+                <tr>
+                    <td>XYZ-1020 (Volvo FH 540)</td>
+                    <td>Marcos Lima</td>
+                    <td>Curitiba PR ➔ SP</td>
+                    <td>3h 10m</td>
+                    <td>3.10 (Atenção)</td>
+                    <td><span class="badge badge-amarelo">🟡 FADIGA MODERADA</span></td>
+                    <td>Programar refeição e descanso de 30 min</td>
+                </tr>
+                <tr>
+                    <td>KLR-4431 (DAF XF)</td>
+                    <td>Antônio Silveira</td>
+                    <td>Campinas SP ➔ RJ</td>
+                    <td>1h 20m</td>
+                    <td>1.85 (Ótimo)</td>
+                    <td><span class="badge badge-verde">🟢 APTO / FOCO TOTAL</span></td>
+                    <td>Viagem liberada no rastreador</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+
