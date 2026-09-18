@@ -1,1 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRT Bio-Health — Painel CCO / Portaria</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            padding: 24px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+        .title-group h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #38bdf8;
+            letter-spacing: 0.5px;
+        }
+        .title-group p {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #34d399;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* METRICS CARDS */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .card-metric {
+            background: #151c2c;
+            border: 1px solid #2a364f;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .card-metric .label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+        .card-metric .value {
+            font-size: 28px;
+            font-weight: 800;
+        }
+        .val-total { color: #f8fafc; }
+        .val-verde { color: #34d399; }
+        .val-amarelo { color: #fbbf24; }
+        .val-vermelho { color: #f87171; }
+        .val-tempo { color: #38bdf8; }
+
+        /* CONTROLS & TABLE */
+        .panel {
+            background: #151c2c;
+            border: 1px solid #2a364f;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .panel-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+        .filter-group {
+            display: flex;
+            gap: 8px;
+        }
+        .filter-btn {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #94a3b8;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .filter-btn.active {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #38bdf8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+        th {
+            background: #1e293b;
+            color: #94a3b8;
+            padding: 12px 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #334155;
+        }
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #1e293b;
+            color: #cbd5e1;
+        }
+        tr:hover { background: rgba(255, 255, 255, 0.02); }
+
+        .badge-status {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            display: inline-block;
+        }
+        .b-verde { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #10b981; }
+        .b-amarelo { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid #f59e0b; }
+        .b-vermelho { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid #ef4444; }
+
+        .sim-btn {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .sim-btn:hover { background: #1d4ed8; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="title-group">
+            <h1>CENTRO DE CONTROLE OPERACIONAL (CCO)</h1>
+            <p>Monitoramento Telemétrico de Prontidão de Turno — NR-01 & NR-17 Compliance</p>
+        </div>
+        <div class="live-indicator">
+            <div class="dot"></div>
+            PAINEL ATIVO (SERVIDORES RENDER LIVE)
+        </div>
+    </div>
+
+    <!-- CARDS DE METRICAS -->
+    <div class="metrics-grid">
+        <div class="card-metric">
+            <div class="label">Check-ins Hoje</div>
+            <div class="value val-total" id="mTotal">142</div>
+        </div>
+        <div class="card-metric">
+            <div class="label">🟢 Liberações (Verde)</div>
+            <div class="value val-verde" id="mVerde">131</div>
+        </div>
+        <div class="card-metric">
+            <div class="label">🟡 Atenção / Pausa (Amarelo)</div>
+            <div class="value val-amarelo" id="mAmarelo">8</div>
+        </div>
+        <div class="card-metric">
+            <div class="label">🔴 Inaptos (Vermelho)</div>
+            <div class="value val-vermelho" id="mVermelho">3</div>
+        </div>
+        <div class="card-metric">
+            <div class="label">⚡ Tempo de Vazão Médio</div>
+            <div class="value val-tempo">760 ms</div>
+        </div>
+    </div>
+
+    <!-- TABELA DE REGISTROS -->
+    <div class="panel">
+        <div class="panel-header">
+            <div class="panel-title">Fila de Registro de Prontidão em Tempo Real</div>
+            <div class="filter-group">
+                <button class="filter-btn active" onclick="filterData('TODOS')">Todos</button>
+                <button class="filter-btn" onclick="filterData('VERDE_APTO')">Verde</button>
+                <button class="filter-btn" onclick="filterData('AMARELO_ATENCAO')">Amarelo</button>
+                <button class="filter-btn" onclick="filterData('VERMELHO_INAPTO')">Vermelho</button>
+                <button class="sim-btn" onclick="simularCheckin()">+ Simular Entrante</button>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Horário</th>
+                    <th>Operador / Código</th>
+                    <th>Setor / GHE</th>
+                    <th>Biometria Laringiana (VSI)</th>
+                    <th>Latência</th>
+                    <th>Status / Veredito</th>
+                    <th>Encaminhamento Operacional</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Linhas inseridas dinamicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Dados de demonstração do turno
+        let records = [
+            { time: "07:58:12", user: "OP-4092 (João Silva)", sector: "Usinagem Heavy", vsi: "2.1 (Normal)", latency: "640 ms", status: "VERDE_APTO", action: "Catraca Destravada — Turno Normal" },
+            { time: "07:57:44", user: "OP-3881 (Carlos Souza)", sector: "Prensas 02", vsi: "2.4 (Normal)", latency: "710 ms", status: "VERDE_APTO", action: "Catraca Destravada — Turno Normal" },
+            { time: "07:56:05", user: "OP-1044 (Marcos Lima)", sector: "Logística / Empilhadeira", vsi: "4.8 (Tensão Alta)", latency: "820 ms", status: "AMARELO_ATENCAO", action: "Orientado: Pausa Hidratação 15min" },
+            { time: "07:54:20", user: "OP-5521 (Roberto Alves)", sector: "Manutenção Elétrica", vsi: "1.9 (Normal)", latency: "680 ms", status: "VERDE_APTO", action: "Catraca Destravada — Turno Normal" },
+            { time: "07:51:10", user: "OP-9012 (Fernando Dias)", sector: "Trabalho em Altura", vsi: "6.9 (Sobrecarga Crítica)", latency: "890 ms", status: "VERMELHO_INAPTO", action: "Veto NR-01: Encaminhado ao SESMT" }
+        ];
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            data.forEach(item => {
+                let badgeClass = 'b-verde';
+                let statusText = '🟢 VERDE (APTO)';
+
+                if (item.status === 'AMARELO_ATENCAO') {
+                    badgeClass = 'b-amarelo';
+                    statusText = '🟡 AMARELO (ATENÇÃO)';
+                } else if (item.status === 'VERMELHO_INAPTO') {
+                    badgeClass = 'b-vermelho';
+                    statusText = '🔴 VERMELHO (INAPTO)';
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight:700; color:#f8fafc;">${item.time}</td>
+                    <td style="font-weight:600; color:#38bdf8;">${item.user}</td>
+                    <td>${item.sector}</td>
+                    <td>${item.vsi}</td>
+                    <td style="color:#a855f7; font-weight:600;">${item.latency}</td>
+                    <td><span class="badge-status ${badgeClass}">${statusText}</span></td>
+                    <td style="font-size:12px;">${item.action}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterData(status) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (status === 'TODOS') {
+                renderTable(records);
+            } else {
+                const filtered = records.filter(r => r.status === status);
+                renderTable(filtered);
+            }
+        }
+
+        function simularCheckin() {
+            const now = new Date().toLocaleTimeString('pt-BR');
+            const ids = [4011, 5822, 1902, 3349, 7710];
+            const nomes = ["Ana Paula", "Guilherme Santos", "Rodrigo Mello", "Luciana Costa", "Vitor Hugo"];
+            const setores = ["Linha de Montagem", "Pintura Industrial", "Almoxarifado", "Caldeiraria", "Prensa 01"];
+
+            const randIdx = Math.floor(Math.random() * nomes.length);
+            const randStatus = Math.random() > 0.8 ? 'AMARELO_ATENCAO' : 'VERDE_APTO';
+
+            const newRecord = {
+                time: now,
+                user: `OP-${ids[randIdx]} (${nomes[randIdx]})`,
+                sector: setores[randIdx],
+                vsi: randStatus === 'VERDE_APTO' ? '2.2 (Normal)' : '4.5 (Tensão Laringiana)',
+                latency: `${Math.floor(Math.random() * 200 + 600)} ms`,
+                status: randStatus,
+                action: randStatus === 'VERDE_APTO' ? 'Catraca Destravada — Turno Normal' : 'Orientado: Pausa Hidratação 15min'
+            };
+
+            records.unshift(newRecord);
+
+            // Atualiza contadores
+            document.getElementById('mTotal').innerText = parseInt(document.getElementById('mTotal').innerText) + 1;
+            if (randStatus === 'VERDE_APTO') {
+                document.getElementById('mVerde').innerText = parseInt(document.getElementById('mVerde').innerText) + 1;
+            } else {
+                document.getElementById('mAmarelo').innerText = parseInt(document.getElementById('mAmarelo').innerText) + 1;
+            }
+
+            renderTable(records);
+        }
+
+        // Render inicial
+        renderTable(records);
+    </script>
+</body>
+</html>
 
