@@ -3,282 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExcelSilience SRT — Cadastro e Gestão de Operadores</title>
+    <title>ExcelSilience SRT - Cadastro & Anamnese Biopsicossocial v2</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #0b0f19;
-            color: #e2e8f0;
-            padding: 24px;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #1e293b;
-        }
-        .title { font-size: 22px; font-weight: 800; color: #38bdf8; letter-spacing: 0.5px; }
-        .subtitle { font-size: 13px; color: #94a3b8; text-transform: uppercase; margin-top: 4px; }
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 24px;
-        }
-        @media (max-width: 900px) {
-            .grid-container { grid-template-columns: 1fr; }
-        }
-        .card {
-            background: #151c2c;
-            border: 1px solid #2a364f;
-            border-radius: 12px;
-            padding: 20px;
-        }
-        .card-title {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: #f8fafc;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .form-group {
-            margin-bottom: 14px;
-        }
-        label {
-            display: block;
-            font-size: 12px;
-            color: #94a3b8;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px 12px;
-            background: #0b0f19;
-            border: 1px solid #2a364f;
-            border-radius: 6px;
-            color: #f8fafc;
-            font-size: 14px;
-        }
-        input:focus, select:focus {
-            border-color: #38bdf8;
-            outline: none;
-        }
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background: #0284c7;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.2s;
-        }
-        .btn:hover { background: #0369a1; }
-        .btn-sec {
-            background: #334155;
-            margin-top: 8px;
-        }
-        .btn-sec:hover { background: #475569; }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 13px;
-        }
-        th {
-            padding: 10px;
-            color: #64748b;
-            font-size: 11px;
-            text-transform: uppercase;
-            border-bottom: 1px solid #1e293b;
-        }
-        td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #1e293b;
-            color: #cbd5e1;
-        }
-        .search-box {
-            margin-bottom: 16px;
-        }
-        .badge {
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-        .badge-ativo { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-        .badge-smartwatch { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
-        .qr-placeholder {
-            display: inline-block;
-            padding: 2px 6px;
-            background: #1e293b;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 11px;
-            color: #a855f7;
-        }
+        body { background-color: #0b0f19; color: #e2e8f0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card-custom { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.2); backdrop-filter: blur(10px); border-radius: 12px; }
+        .text-cyan { color: #38bdf8; }
+        .btn-cyan { background-color: #38bdf8; color: #0b0f19; font-weight: 600; border: none; }
+        .btn-cyan:hover { background-color: #0284c7; color: #ffffff; }
+        .form-control, .form-select { background-color: #1e293b; border: 1px solid #334155; color: #f8fafc; }
+        .form-control:focus, .form-select:focus { background-color: #1e293b; border-color: #38bdf8; color: #ffffff; box-shadow: 0 0 0 0.25rem rgba(56, 189, 248, 0.25); }
+        .nav-tabs .nav-link { color: #94a3b8; border: none; }
+        .nav-tabs .nav-link.active { color: #38bdf8; background-color: #1e293b; border-bottom: 2px solid #38bdf8; font-weight: bold; }
+        .badge-pro { background-color: #10b981; color: #0b0f19; font-weight: bold; }
+        .badge-clinical { background-color: #8b5cf6; color: #ffffff; font-weight: bold; }
     </style>
 </head>
-<body>
-    <div class="header">
-        <div>
-            <div class="title">SRT BIO-HEALTH — CADASTRO DE OPERADORES</div>
-            <div class="subtitle">Módulo de Gestão de Colaboradores, GHE (NR-01) e Parametrização Etária</div>
+<body class="p-4">
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="text-cyan fw-bold mb-0"><i class="fa-solid fa-id-card-clip me-2"></i>ExcelSilience SRT :: Gestão de Pessoas & Anamnese Fisiológica</h2>
+                <p class="text-muted small">Cadastro Unificado de Colaboradores, C-Suite & Parâmetros Fisiológicos Avançados (Sem IMC)</p>
+            </div>
+            <div>
+                <span class="badge badge-pro p-2 me-2"><i class="fa-solid fa-shield-halved me-1"></i> Plano 2: Wearable Pro (C-Suite & Risco)</span>
+                <span class="badge badge-clinical p-2"><i class="fa-solid fa-stethoscope me-1"></i> Plano 3: Clinical Enterprise (CRM)</span>
+            </div>
         </div>
-    </div>
 
-    <div class="grid-container">
-        <!-- FORMULÁRIO DE CADASTRO -->
-        <div class="card">
-            <div class="card-title">➕ Cadastrar Novo Colaborador</div>
-            <form id="formCadastro">
-                <div class="form-group">
-                    <label>Matrícula / ID do Colaborador</label>
-                    <input type="text" id="matId" placeholder="Ex: OP-1042" required>
+        <!-- Form Card -->
+        <div class="card card-custom p-4 mb-4">
+            <ul class="nav nav-tabs mb-4" id="cadTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="dados-tab" data-bs-toggle="tab" data-bs-target="#dados" type="button"><i class="fa-solid fa-user me-2"></i>1. Dados Institucionais & Plano</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="fisiologia-tab" data-bs-toggle="tab" data-bs-target="#fisiologia" type="button"><i class="fa-solid fa-heart-pulse me-2"></i>2. Composição Corporal (%BF & FFMI)</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="anamnese-tab" data-bs-toggle="tab" data-bs-target="#anamnese" type="button"><i class="fa-solid fa-notes-medical me-2"></i>3. Anamnese Biopsicossocial & Hábitos</button>
+                </li>
+            </ul>
+
+            <form id="formOperador">
+                <div class="tab-content" id="cadTabsContent">
+                    <!-- Tab 1 -->
+                    <div class="tab-pane fade show active" id="dados">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label text-muted">ID / Matrícula</label>
+                                <input type="text" class="form-control" id="matricula" value="EXC-2026-001" required>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label text-muted">Nome Completo</label>
+                                <input type="text" class="form-control" id="nome" value="Flávio Veríssimo" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-muted">E-mail Corporativo</label>
+                                <input type="email" class="form-control" id="email" value="fvffonseca@gmail.com" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-muted">Faixa Etária (Calibração VFC)</label>
+                                <select class="form-select" id="faixaEtaria">
+                                    <option value="30-40">30 a 40 anos</option>
+                                    <option value="41-50">41 a 50 anos</option>
+                                    <option value="51-60">51 a 60 anos</option>
+                                    <option value="61-70" selected>61 a 70 anos</option>
+                                    <option value="71-80">71 a 80 anos</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-muted">Perfil de Alocação</label>
+                                <select class="form-select" id="perfilAlocacao">
+                                    <option value="csuite" selected>C-Suite / Diretoria Executiva</option>
+                                    <option value="risco">Operador de Risco / Motorista</option>
+                                    <option value="fábrica">Operacional / Fábrica</option>
+                                    <option value="admin">Administrativo / Gestão</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-muted">Plano Contratado</label>
+                                <select class="form-select" id="planoSaaS">
+                                    <option value="p1">Plano 1: Workforce (Voz 3,5s)</option>
+                                    <option value="p2" selected>Plano 2: Wearable Pro (C-Suite & Risco)</option>
+                                    <option value="p3">Plano 3: Clinical Enterprise (CRM)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-muted">ID Smartwatch / Garmin</label>
+                                <input type="text" class="form-control" id="garminId" value="GARMIN-PRO-FLAVIO-01">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2 -->
+                    <div class="tab-pane fade" id="fisiologia">
+                        <div class="alert alert-dark border-info text-cyan mb-3">
+                            <i class="fa-solid fa-circle-info me-2"></i> <strong>Nota de Metodologia:</strong> O sistema ExcelSilience desconsidera o IMC (Índice de Massa Corporal) por falhar em indivíduos com alta densidade muscular e óssea. Utilizamos <strong>%BF (Gordura Corporal)</strong>, <strong>FFMI (Massa Magra)</strong> e <strong>RCE (Relação Cintura-Estatura)</strong>.
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label text-muted">Altura (cm)</label>
+                                <input type="number" class="form-control" id="altura" value="182">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-muted">Peso Total (kg)</label>
+                                <input type="number" class="form-control" id="peso" value="88">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-muted">% Gordura Corporal (%BF)</label>
+                                <input type="number" class="form-control text-success fw-bold" id="percentGordura" value="13.0" step="0.1">
+                                <span class="form-text text-muted">Faixa Flávio: 13% (Zona Atlética)</span>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-muted">Circunferência Abdominal (cm)</label>
+                                <input type="number" class="form-control" id="cintura" value="84">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 bg-dark rounded border border-secondary text-center">
+                                    <small class="text-muted d-block">FFMI (Índice de Massa Magra)</small>
+                                    <span class="fs-4 fw-bold text-cyan" id="ffmiVal">23.2 kg/m²</span>
+                                    <small class="text-success d-block">Excelente Densidade Muscular</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 bg-dark rounded border border-secondary text-center">
+                                    <small class="text-muted d-block">RCE (Cintura / Estatura)</small>
+                                    <span class="fs-4 fw-bold text-success" id="rceVal">0.46</span>
+                                    <small class="text-success d-block">Baixo Risco Visceral (< 0.50)</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 bg-dark rounded border border-secondary text-center">
+                                    <small class="text-muted d-block">Massa Magra Isolada</small>
+                                    <span class="fs-4 fw-bold text-cyan" id="massaMagraVal">76.5 kg</span>
+                                    <small class="text-muted d-block">Estrutura Óssea/Muscular Elevada</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3 -->
+                    <div class="tab-pane fade" id="anamnese">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label text-muted">Estado Civil</label>
+                                <select class="form-select" id="estadoCivil">
+                                    <option value="casado" selected>Casado(a)</option>
+                                    <option value="solteiro">Solteiro(a)</option>
+                                    <option value="divorciado">Divorciado(a)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-muted">Número de Filhos</label>
+                                <input type="number" class="form-control" id="filhos" value="2">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted">Medicamentos em Uso Contínuo (Sigilo Médico)</label>
+                                <input type="text" class="form-control" id="medicamentos" placeholder="Ex: Nenhum ou suplementação específica">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-muted">Práticas Esportivas / Treinos</label>
+                                <input type="text" class="form-control" id="esportes" value="Musculação, Corrida, Ciclismo">
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label text-muted">Biohacking & Práticas de Restauro Fisiológico</label>
+                                <div class="d-flex gap-3 mt-1">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="sauna" checked>
+                                        <label class="form-check-label text-light" for="sauna">Sauna / Terapia Térmica</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="jejum" checked>
+                                        <label class="form-check-label text-light" for="jejum">Jejum Intermitente</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="meditacao" checked>
+                                        <label class="form-check-label text-light" for="meditacao">Meditação / Mindfulness</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Nome Completo</label>
-                    <input type="text" id="nome" placeholder="Ex: João Carlos Silva" required>
+
+                <div class="mt-4 pt-3 border-top border-secondary d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-outline-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-cyan"><i class="fa-solid fa-floppy-disk me-2"></i>Salvar Colaborador & Sincronizar Banco</button>
                 </div>
-                <div class="form-group">
-                    <label>Setor / GHE (NR-01)</label>
-                    <select id="setor" required>
-                        <option value="Operação de Prensa">Operação de Prensa</option>
-                        <option value="Manutenção Mecânica">Manutenção Mecânica</option>
-                        <option value="Logística e Transporte">Logística e Transporte</option>
-                        <option value="Montagem Industrial">Montagem Industrial</option>
-                        <option value="Caldeiraria / Alta Temperatura">Caldeiraria / Alta Temperatura</option>
-                        <option value="Motorista Urbano / Rodoviário">Motorista Urbano / Rodoviário</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Faixa Etária (Calibração VFC / VSI)</label>
-                    <select id="faixaEtaria" required>
-                        <option value="30-40">30 a 40 anos (HRV Ref: > 55 ms)</option>
-                        <option value="41-50" selected>41 a 50 anos (HRV Ref: > 45 ms)</option>
-                        <option value="51-60">51 a 60 anos (HRV Ref: > 35 ms)</option>
-                        <option value="61-70">61 a 70 anos (HRV Ref: > 28 ms)</option>
-                        <option value="71-80">71 a 80 anos (HRV Ref: > 22 ms)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>ID do Wearable / Smartwatch (Opcional)</label>
-                    <input type="text" id="smartwatchId" placeholder="Ex: GARMIN-SW-8812">
-                </div>
-                <button type="submit" class="btn">💾 Salvar Colaborador</button>
             </form>
-            <hr style="border-color: #1e293b; margin: 16px 0;">
-            <button id="btnImportarCsv" class="btn btn-sec">📁 Importar Planilha CSV / eSocial</button>
-        </div>
-
-        <!-- LISTA E BUSCA DE COLABORADORES -->
-        <div class="card">
-            <div class="card-title">
-                <span>📋 Colaboradores Cadastrados (<span id="totalCadastrados">3</span>)</span>
-            </div>
-            <div class="search-box">
-                <input type="text" id="txtBusca" placeholder="🔍 Buscar por nome, matrícula ou setor...">
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Matrícula</th>
-                        <th>Nome</th>
-                        <th>Setor / GHE</th>
-                        <th>Faixa Etária</th>
-                        <th>Smartwatch</th>
-                        <th>Status</th>
-                        <th>QR Crachá</th>
-                    </tr>
-                </thead>
-                <tbody id="tblBody">
-                    <tr>
-                        <td><strong>OP-1001</strong></td>
-                        <td>Carlos Eduardo Mendes</td>
-                        <td>Operação de Prensa</td>
-                        <td>41-50 anos</td>
-                        <td><span class="badge badge-smartwatch">SW-9081</span></td>
-                        <td><span class="badge badge-ativo">Ativo</span></td>
-                        <td><span class="qr-placeholder">QR-1001</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>OP-1002</strong></td>
-                        <td>Ana Paula Souza</td>
-                        <td>Logística e Transporte</td>
-                        <td>30-40 anos</td>
-                        <td><span class="badge badge-smartwatch">SW-4412</span></td>
-                        <td><span class="badge badge-ativo">Ativo</span></td>
-                        <td><span class="qr-placeholder">QR-1002</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>OP-1003</strong></td>
-                        <td>Roberto Farias</td>
-                        <td>Manutenção Mecânica</td>
-                        <td>51-60 anos</td>
-                        <td><em>Nenhum</em></td>
-                        <td><span class="badge badge-ativo">Ativo</span></td>
-                        <td><span class="qr-placeholder">QR-1003</span></td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </div>
 
-    <script>
-        const formCadastro = document.getElementById('formCadastro');
-        const tblBody = document.getElementById('tblBody');
-        const totalCadastrados = document.getElementById('totalCadastrados');
-        const txtBusca = document.getElementById('txtBusca');
-        let count = 3;
-
-        formCadastro.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const matId = document.getElementById('matId').value;
-            const nome = document.getElementById('nome').value;
-            const setor = document.getElementById('setor').value;
-            const faixaEtaria = document.getElementById('faixaEtaria').value + ' anos';
-            const smartwatchId = document.getElementById('smartwatchId').value || 'Nenhum';
-
-            count++;
-            const newRow = `
-                <tr>
-                    <td><strong>${matId}</strong></td>
-                    <td>${nome}</td>
-                    <td>${setor}</td>
-                    <td>${faixaEtaria}</td>
-                    <td>${smartwatchId !== 'Nenhum' ? `<span class="badge badge-smartwatch">${smartwatchId}</span>` : '<em>Nenhum</em>'}</td>
-                    <td><span class="badge badge-ativo">Ativo</span></td>
-                    <td><span class="qr-placeholder">QR-${matId}</span></td>
-                </tr>
-            `;
-
-            tblBody.insertAdjacentHTML('afterbegin', newRow);
-            totalCadastrados.innerText = count;
-            formCadastro.reset();
-            alert(`Colaborador ${nome} (${matId}) cadastrado com sucesso!`);
-        });
-
-        txtBusca.addEventListener('keyup', () => {
-            const term = txtBusca.value.toLowerCase();
-            const rows = tblBody.getElementsByTagName('tr');
-            Array.from(rows).forEach(row => {
-                const text = row.innerText.toLowerCase();
-                row.style.display = text.includes(term) ? '' : 'none';
-            });
-        });
-
-        document.getElementById('btnImportarCsv').addEventListener('click', () => {
-            alert('Selecione o arquivo CSV do eSocial (S-2200) ou planilha modelo para importar em lote.');
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
