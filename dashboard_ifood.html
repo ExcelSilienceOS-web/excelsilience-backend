@@ -1,1 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRT Delivery — Dashboard iFood / Duas Rodas</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0d0f17; color: #f1f5f9; padding: 24px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid #1e293b; padding-bottom: 16px; }
+        .title { font-size: 22px; font-weight: 800; color: #ea580c; }
+        .subtitle { font-size: 12px; color: #64748b; text-transform: uppercase; margin-top: 4px; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .card { background: #181b29; border: 1px solid #272a3d; border-radius: 12px; padding: 20px; text-align: center; }
+        .card-val { font-size: 30px; font-weight: 800; margin-top: 6px; }
+        .val-orange { color: #f97316; }
+        .val-green { color: #34d399; }
+        .val-yellow { color: #fbbf24; }
+        .val-red { color: #f87171; }
+        .card-lbl { font-size: 11px; color: #94a3b8; text-transform: uppercase; }
+        .panel { background: #181b29; border: 1px solid #272a3d; border-radius: 12px; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+        th { padding: 12px; color: #64748b; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #272a3d; }
+        td { padding: 12px; border-bottom: 1px solid #272a3d; color: #cbd5e1; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+        .badge-verde { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #10b981; }
+        .badge-amarelo { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid #f59e0b; }
+        .badge-vermelho { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <div class="title">SRT BIOMOBILITY — TELEMETRIA DE ENTREGADORES (2 RODAS)</div>
+            <div class="subtitle">Prevenção de Acidentes em Motocicletas e Bikes sob Chuva e Calor Extremo</div>
+        </div>
+    </div>
+
+    <div class="cards-grid">
+        <div class="card">
+            <div class="card-lbl">Entregadores Ativos</div>
+            <div class="card-val val-orange">8.920</div>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Tempo de Reação Médio</div>
+            <div class="card-val val-green">210 ms (Rápido)</div>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Risco sob Chuva / Pico</div>
+            <div class="card-val val-yellow">182 Motoboys</div>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Pausas Obrigatórias de Calor</div>
+            <div class="card-val val-red">42 Ativadas</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: #f8fafc;">Monitoramento de Reflexos Motores & Tensão na Pilotagem</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Entregador</th>
+                    <th>Veículo</th>
+                    <th>Entregas Hoje</th>
+                    <th>Reflexo Ocular (IDC)</th>
+                    <th>Condição Climática</th>
+                    <th>Status / Ação Tática</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>MOTO-7741</td>
+                    <td>Moto 160cc</td>
+                    <td>22 Entregas</td>
+                    <td>Lento (380 ms)</td>
+                    <td>Pistas Molhadas (Chuva)</td>
+                    <td><span class="badge badge-vermelho">🔴 PAUSA OBRIGATÓRIA (30 MIN)</span></td>
+                </tr>
+                <tr>
+                    <td>BIKE-3321</td>
+                    <td>Bike Elétrica</td>
+                    <td>14 Entregas</td>
+                    <td>Normal (220 ms)</td>
+                    <td>Sol Intenso (34°C)</td>
+                    <td><span class="badge badge-amarelo">🟡 ALERTA HIDRATAÇÃO</span></td>
+                </tr>
+                <tr>
+                    <td>MOTO-9012</td>
+                    <td>Moto 125cc</td>
+                    <td>8 Entregas</td>
+                    <td>Excelente (190 ms)</td>
+                    <td>Normal</td>
+                    <td><span class="badge badge-verde">🟢 APTO / LIBERADO</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
 
