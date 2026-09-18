@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRT Bio-Health — Dashboard RH & Medicina do Trabalho</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            padding: 24px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #1e293b;
+        }
+        .title { font-size: 22px; font-weight: 800; color: #38bdf8; letter-spacing: 0.5px; }
+        .subtitle { font-size: 13px; color: #94a3b8; text-transform: uppercase; margin-top: 4px; }
+        .tabs { display: flex; gap: 12px; margin-bottom: 24px; }
+        .tab-btn {
+            background: #151c2c;
+            border: 1px solid #2a364f;
+            color: #94a3b8;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn.active { background: #0284c7; color: #fff; border-color: #38bdf8; }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .card {
+            background: #151c2c;
+            border: 1px solid #2a364f;
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+            position: relative;
+        }
+        .card-val { font-size: 28px; font-weight: 800; margin-top: 6px; }
+        .val-total { color: #38bdf8; }
+        .val-verde { color: #34d399; }
+        .val-amarelo { color: #fbbf24; }
+        .val-vermelho { color: #f87171; }
+        .val-purple { color: #a855f7; }
+        .card-lbl { font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: 600; }
+
+        .grid-two {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+        .panel-box {
+            background: #151c2c;
+            border: 1px solid #2a364f;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .panel-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #f8fafc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+        th { padding: 10px; color: #64748b; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #1e293b; }
+        td { padding: 12px 10px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; display: inline-block; }
+        .badge-verde { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #10b981; }
+        .badge-amarelo { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid #f59e0b; }
+        .badge-vermelho { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid #ef4444; }
+
+        .btn-add-metric {
+            background: #10b981;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .custom-widgets-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <div class="title">SRT BIO-HEALTH — COCKPIT DE RH & MEDICINA DO TRABALHO</div>
+            <div class="subtitle">Gestão Integrada de Prontidão, Absenteísmo e Risco Cardiovascular (NR-01 & NR-17)</div>
+        </div>
+        <button class="btn-add-metric" onclick="adicionarMetricaCustomizada()">➕ Adicionar Métrica do RH</button>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('rh')">👥 Visão People Analytics & RH</button>
+        <button class="tab-btn" onclick="switchTab('medico')">🩺 Visão Médico do Trabalho (Clinical Cockpit)</button>
+    </div>
+
+    <!-- VISÃO RH -->
+    <div id="view-rh">
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-lbl">Total Colaboradores</div>
+                <div class="card-val val-total">850</div>
+            </div>
+            <div class="card">
+                <div class="card-lbl">Prontidão Geral</div>
+                <div class="card-val val-verde">94.2%</div>
+            </div>
+            <div class="card">
+                <div class="card-lbl">Taxa de Absenteísmo</div>
+                <div class="card-val val-amarelo">1.8%</div>
+            </div>
+            <div class="card">
+                <div class="card-lbl">Atestados (Fadiga/Burnout)</div>
+                <div class="card-val val-vermelho">12 este mês</div>
+            </div>
+            <div class="card">
+                <div class="card-lbl">Estresse Setorial (SSLI)</div>
+                <div class="card-val val-purple">2.1 (Normal)</div>
+            </div>
+        </div>
+
+        <div class="grid-two">
+            <div class="panel-box">
+                <div class="panel-title">Mapeamento de Carga de Estresse por Setor (GHE - N ≥ 5)</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Setor / Departamento</th>
+                            <th>Colaboradores</th>
+                            <th>Índice SSLI</th>
+                            <th>Taxa Faltas/Atestados</th>
+                            <th>Status de Prontidão</th>
+                            <th>Ação Recomendada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Operação Industrial / Linha A</td>
+                            <td>120</td>
+                            <td>3.8 (Elevado)</td>
+                            <td>3.2%</td>
+                            <td><span class="badge badge-amarelo">🟡 ATENÇÃO</span></td>
+                            <td>Rodízio de Posto + Pausa NR-17</td>
+                        </tr>
+                        <tr>
+                            <td>Logística e Almoxarifado</td>
+                            <td>85</td>
+                            <td>1.9 (Estável)</td>
+                            <td>0.9%</td>
+                            <td><span class="badge badge-verde">🟢 FLUIDO</span></td>
+                            <td>Manter Rotina</td>
+                        </tr>
+                        <tr>
+                            <td>Manutenção de Caldeiras</td>
+                            <td>42</td>
+                            <td>4.6 (Crítico)</td>
+                            <td>5.4%</td>
+                            <td><span class="badge badge-vermelho">🔴 RISCO ESTOL</span></td>
+                            <td>Intervenção Psicossocial Tática</td>
+                        </tr>
+                        <tr>
+                            <td>Atendimento e SAC</td>
+                            <td>60</td>
+                            <td>3.1 (Atenção)</td>
+                            <td>2.1%</td>
+                            <td><span class="badge badge-amarelo">🟡 ATENÇÃO</span></td>
+                            <td>Refrigeração Neurológica</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="panel-box">
+                <div class="panel-title">Métricas Customizadas do RH</div>
+                <div id="custom-container" class="custom-widgets-area">
+                    <div class="card">
+                        <div class="card-lbl">Turnover Voluntário</div>
+                        <div class="card-val val-verde">0.8%</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-lbl">Horas Extras Acumuladas</div>
+                        <div class="card-val val-amarelo">142h / mês</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISÃO MÉDICO DO TRABALHO -->
+    <div id="view-medico" style="display: none;">
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-lbl">Monitorados no SESMT</div>
+                <div class="card-val val-total">850 Vidas</div>
+            </div>
+            <div class="card">
+                <div class="card-lbl">Alertas AVC / Fibrilação</div>
+                <div class="card-val val-vermelho">2 Casos Suspeitos</div>
+            </div>
+            <div class="card">
+                <div class="card-lbl">Risco Cardiovascular Elevado</div>
+                <div class="card-val val-amarelo">18 Colaboradores</div>
+            </div>
+            <div class="card">
+                <div class="card-lbl">Restauro Fisiológico (VFC)</div>
+                <div class="card-val val-verde">78 ms (Bom)</div>
+            </div>
+        </div>
+
+        <div class="panel-box">
+            <div class="panel-title">Triagem Clínica de Eventos Vasculares & Sobrecarga Auditada (Sigilo CFM)</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Prontuário ID</th>
+                        <th>Setor</th>
+                        <th>VFC (rMSSD)</th>
+                        <th>SpO2 Noturna</th>
+                        <th>Zonas Intensidade Cardio</th>
+                        <th>Indicador de Risco</th>
+                        <th>Conduta Médica</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>MED-8492</td>
+                        <td>Caldeiraria</td>
+                        <td>12 ms (MUITO BAIXO)</td>
+                        <td>88% (Apneia)</td>
+                        <td>42 min Zona 5 (Extremo)</td>
+                        <td><span class="badge badge-vermelho">🔴 RISCO INFARTO/AVC</span></td>
+                        <td>Encaminhar ao Cardiologista + Afastamento Operacional</td>
+                    </tr>
+                    <tr>
+                        <td>MED-7102</td>
+                        <td>Operação Guincho</td>
+                        <td>22 ms (Baixo)</td>
+                        <td>93% (Normal)</td>
+                        <td>15 min Zona 4 (Alto)</td>
+                        <td><span class="badge badge-amarelo">🟡 HIPERTENSÃO / FADIGA</span></td>
+                        <td>Mapeamento Holter 24h + Pausa Programada</td>
+                    </tr>
+                    <tr>
+                        <td>MED-3940</td>
+                        <td>Escritório Central</td>
+                        <td>65 ms (Ótimo)</td>
+                        <td>98% (Ótimo)</td>
+                        <td>0 min Zona 5</td>
+                        <td><span class="badge badge-verde">🟢 RIGOR FISIOLÓGICO</span></td>
+                        <td>Manter Acompanhamento Periódico</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            if (tab === 'rh') {
+                document.getElementById('view-rh').style.display = 'block';
+                document.getElementById('view-medico').style.display = 'none';
+                event.target.classList.add('active');
+            } else {
+                document.getElementById('view-rh').style.display = 'none';
+                document.getElementById('view-medico').style.display = 'block';
+                event.target.classList.add('active');
+            }
+        }
+
+        function adicionarMetricaCustomizada() {
+            const nome = prompt("Digite o nome da nova métrica para o RH (ex: Índice de Satisfação, Custo com Plano de Saúde, NPS do Refeitório):");
+            if (!nome) return;
+            const valor = prompt(`Digite o valor inicial para "${nome}":`);
+            if (!valor) return;
+
+            const container = document.getElementById('custom-container');
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="card-lbl">${nome}</div>
+                <div class="card-val val-purple">${valor}</div>
+            `;
+            container.appendChild(card);
+        }
+    </script>
+</body>
+</html>
