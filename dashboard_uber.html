@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRT Mobility — Dashboard UBER / Ride-Hailing</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #090d16; color: #f1f5f9; padding: 24px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid #1e293b; padding-bottom: 16px; }
+        .title { font-size: 22px; font-weight: 800; color: #38bdf8; }
+        .subtitle { font-size: 12px; color: #64748b; text-transform: uppercase; margin-top: 4px; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .card { background: #111827; border: 1px solid #1e293b; border-radius: 12px; padding: 20px; text-align: center; }
+        .card-val { font-size: 30px; font-weight: 800; margin-top: 6px; }
+        .val-blue { color: #38bdf8; }
+        .val-green { color: #34d399; }
+        .val-yellow { color: #fbbf24; }
+        .val-red { color: #f87171; }
+        .card-lbl { font-size: 11px; color: #94a3b8; text-transform: uppercase; }
+        .panel { background: #111827; border: 1px solid #1e293b; border-radius: 12px; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+        th { padding: 12px; color: #64748b; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #1e293b; }
+        td { padding: 12px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+        .badge-verde { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #10b981; }
+        .badge-amarelo { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid #f59e0b; }
+        .badge-vermelho { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <div class="title">SRT MOBILITY — PAINEL DE FADIGA & SEGURANÇA (RIDE-HAILING)</div>
+            <div class="subtitle">Proteção de Motoristas de Aplicativo em Tempo Real (Pré-Corrida)</div>
+        </div>
+    </div>
+
+    <div class="cards-grid">
+        <div class="card">
+            <div class="card-lbl">Motoristas Online</div>
+            <div class="card-val val-blue">12.450</div>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Check-ins Pré-Corrida</div>
+            <div class="card-val val-green">98.6%</div>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Alerta Fadiga Noturna</div>
+            <div class="card-val val-yellow">340 Motoristas</div>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Bloqueio Preventivo (App)</div>
+            <div class="card-val val-red">85 Desconexões</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: #f8fafc;">Monitoramento de Jornada Contínua e Micro-Sono no App</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Motorista</th>
+                    <th>Cidade / Zona</th>
+                    <th>Horas ao Volante</th>
+                    <th>Biometria Vocal (VSI)</th>
+                    <th>Status no App</th>
+                    <th>Ação do Sistema (Safety Interlock)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>MOTO-9482</td>
+                    <td>São Paulo / Z. Sul</td>
+                    <td>8h 40m</td>
+                    <td>4.50 (Crítico)</td>
+                    <td><span class="badge badge-vermelho">🔴 DESCONECTADO (MANDATÓRIO)</span></td>
+                    <td>Pausa Obrigatória de 6 horas aplicadas no App</td>
+                </tr>
+                <tr>
+                    <td>MOTO-3109</td>
+                    <td>Rio de Janeiro / Centro</td>
+                    <td>6h 15m</td>
+                    <td>3.40 (Elevado)</td>
+                    <td><span class="badge badge-amarelo">🟡 ALERTA DE FADIGA</span></td>
+                    <td>Sugerir pausa de 20 min com desconto em café</td>
+                </tr>
+                <tr>
+                    <td>MOTO-1204</td>
+                    <td>Belo Horizonte / Pampulha</td>
+                    <td>2h 10m</td>
+                    <td>1.90 (Normal)</td>
+                    <td><span class="badge badge-verde">🟢 APTO / LIBERADO</span></td>
+                    <td>Livre para aceitar corridas longas</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
