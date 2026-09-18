@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRT Passenger — Dashboard Transporte Coletivo</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0b0f19; color: #f1f5f9; padding: 24px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid #1e293b; padding-bottom: 16px; }
+        .title { font-size: 22px; font-weight: 800; color: #8b5cf6; }
+        .subtitle { font-size: 12px; color: #64748b; text-transform: uppercase; margin-top: 4px; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .card { background: #151c2c; border: 1px solid #2a364f; border-radius: 12px; padding: 20px; text-align: center; }
+        .card-val { font-size: 30px; font-weight: 800; margin-top: 6px; }
+        .val-purple { color: #a855f7; }
+        .val-green { color: #34d399; }
+        .val-yellow { color: #fbbf24; }
+        .val-red { color: #f87171; }
+        .card-lbl { font-size: 11px; color: #94a3b8; text-transform: uppercase; }
+        .panel { background: #151c2c; border: 1px solid #2a364f; border-radius: 12px; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+        th { padding: 12px; color: #64748b; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #1e293b; }
+        td { padding: 12px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+        .badge-verde { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #10b981; }
+        .badge-amarelo { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid #f59e0b; }
+        .badge-vermelho { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <div class="title">SRT PASSENGER — TRANSPORTE URBANO E REGIONAL DE PASSAGEIROS</div>
+            <div class="subtitle">Checagem de Garagem na Madrugada (04:00) e Proteção de Vidas em Ônibus</div>
+        </div>
+    </div>
+
+    <div class="cards-grid">
+        <div class="card">
+            <div class="card-lbl">Ônibus em Circulação</div>
+            <div class="card-val val-purple">520 Linhas</div>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Motoristas Aprovados (Garagem)</div>
+            <div class="card-val val-green">498 Liberados</div>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Reavaliação no Terminal</div>
+            <div class="card-val val-yellow">18 Motoristas</div>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Bloqueios de Partida (Garagem)</div>
+            <div class="card-val val-red">4 Trocas de Plantão</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: #f8fafc;">Check-in Obrigatório de Garagem antes de Ligar a Ignição do Ônibus</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Linha / Prefixo</th>
+                    <th>Garagem / Terminal</th>
+                    <th>Motorista</th>
+                    <th>Horário Saída</th>
+                    <th>Prontidão Vocal</th>
+                    <th>Status da Chave</th>
+                    <th>Decisão da Despachadoria</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Linha 8012 (Lapa / Paulista)</td>
+                    <td>Garagem Central (04:15)</td>
+                    <td>Pedro Henrique Alves</td>
+                    <td>04:30</td>
+                    <td>4.20 (Fadiga Noturna)</td>
+                    <td><span class="badge badge-vermelho">🔴 CHAVE BLOQUEADA</span></td>
+                    <td>Substituição imediata por motorista reserva</td>
+                </tr>
+                <tr>
+                    <td>Linha 5110 (Terminal Mercado)</td>
+                    <td>Terminal Sacomã</td>
+                    <td>Roberto Mendes</td>
+                    <td>07:10</td>
+                    <td>3.20 (Atenção)</td>
+                    <td><span class="badge badge-amarelo">🟡 LIBERADO COM RESTRIÇÃO</span></td>
+                    <td>Reavaliação obrigatória no final da viagem</td>
+                </tr>
+                <tr>
+                    <td>Linha 107T (Metrô Tucuruvi)</td>
+                    <td>Garagem Norte (05:00)</td>
+                    <td>Fernando Souza</td>
+                    <td>05:15</td>
+                    <td>1.95 (Ótimo)</td>
+                    <td><span class="badge badge-verde">🟢 LIBERADO</span></td>
+                    <td>Partida autorizada no validador</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
