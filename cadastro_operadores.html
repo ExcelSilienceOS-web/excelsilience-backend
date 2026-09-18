@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExcelSilience SRT — Cadastro e Gestão de Operadores</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            padding: 24px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #1e293b;
+        }
+        .title { font-size: 22px; font-weight: 800; color: #38bdf8; letter-spacing: 0.5px; }
+        .subtitle { font-size: 13px; color: #94a3b8; text-transform: uppercase; margin-top: 4px; }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+        }
+        @media (max-width: 900px) {
+            .grid-container { grid-template-columns: 1fr; }
+        }
+        .card {
+            background: #151c2c;
+            border: 1px solid #2a364f;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #f8fafc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        label {
+            display: block;
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            background: #0b0f19;
+            border: 1px solid #2a364f;
+            border-radius: 6px;
+            color: #f8fafc;
+            font-size: 14px;
+        }
+        input:focus, select:focus {
+            border-color: #38bdf8;
+            outline: none;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #0284c7;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+        .btn:hover { background: #0369a1; }
+        .btn-sec {
+            background: #334155;
+            margin-top: 8px;
+        }
+        .btn-sec:hover { background: #475569; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+        th {
+            padding: 10px;
+            color: #64748b;
+            font-size: 11px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #1e293b;
+        }
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #1e293b;
+            color: #cbd5e1;
+        }
+        .search-box {
+            margin-bottom: 16px;
+        }
+        .badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .badge-ativo { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+        .badge-smartwatch { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+        .qr-placeholder {
+            display: inline-block;
+            padding: 2px 6px;
+            background: #1e293b;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 11px;
+            color: #a855f7;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <div class="title">SRT BIO-HEALTH — CADASTRO DE OPERADORES</div>
+            <div class="subtitle">Módulo de Gestão de Colaboradores, GHE (NR-01) e Parametrização Etária</div>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <!-- FORMULÁRIO DE CADASTRO -->
+        <div class="card">
+            <div class="card-title">➕ Cadastrar Novo Colaborador</div>
+            <form id="formCadastro">
+                <div class="form-group">
+                    <label>Matrícula / ID do Colaborador</label>
+                    <input type="text" id="matId" placeholder="Ex: OP-1042" required>
+                </div>
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="nome" placeholder="Ex: João Carlos Silva" required>
+                </div>
+                <div class="form-group">
+                    <label>Setor / GHE (NR-01)</label>
+                    <select id="setor" required>
+                        <option value="Operação de Prensa">Operação de Prensa</option>
+                        <option value="Manutenção Mecânica">Manutenção Mecânica</option>
+                        <option value="Logística e Transporte">Logística e Transporte</option>
+                        <option value="Montagem Industrial">Montagem Industrial</option>
+                        <option value="Caldeiraria / Alta Temperatura">Caldeiraria / Alta Temperatura</option>
+                        <option value="Motorista Urbano / Rodoviário">Motorista Urbano / Rodoviário</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Faixa Etária (Calibração VFC / VSI)</label>
+                    <select id="faixaEtaria" required>
+                        <option value="30-40">30 a 40 anos (HRV Ref: > 55 ms)</option>
+                        <option value="41-50" selected>41 a 50 anos (HRV Ref: > 45 ms)</option>
+                        <option value="51-60">51 a 60 anos (HRV Ref: > 35 ms)</option>
+                        <option value="61-70">61 a 70 anos (HRV Ref: > 28 ms)</option>
+                        <option value="71-80">71 a 80 anos (HRV Ref: > 22 ms)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ID do Wearable / Smartwatch (Opcional)</label>
+                    <input type="text" id="smartwatchId" placeholder="Ex: GARMIN-SW-8812">
+                </div>
+                <button type="submit" class="btn">💾 Salvar Colaborador</button>
+            </form>
+            <hr style="border-color: #1e293b; margin: 16px 0;">
+            <button id="btnImportarCsv" class="btn btn-sec">📁 Importar Planilha CSV / eSocial</button>
+        </div>
+
+        <!-- LISTA E BUSCA DE COLABORADORES -->
+        <div class="card">
+            <div class="card-title">
+                <span>📋 Colaboradores Cadastrados (<span id="totalCadastrados">3</span>)</span>
+            </div>
+            <div class="search-box">
+                <input type="text" id="txtBusca" placeholder="🔍 Buscar por nome, matrícula ou setor...">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Nome</th>
+                        <th>Setor / GHE</th>
+                        <th>Faixa Etária</th>
+                        <th>Smartwatch</th>
+                        <th>Status</th>
+                        <th>QR Crachá</th>
+                    </tr>
+                </thead>
+                <tbody id="tblBody">
+                    <tr>
+                        <td><strong>OP-1001</strong></td>
+                        <td>Carlos Eduardo Mendes</td>
+                        <td>Operação de Prensa</td>
+                        <td>41-50 anos</td>
+                        <td><span class="badge badge-smartwatch">SW-9081</span></td>
+                        <td><span class="badge badge-ativo">Ativo</span></td>
+                        <td><span class="qr-placeholder">QR-1001</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>OP-1002</strong></td>
+                        <td>Ana Paula Souza</td>
+                        <td>Logística e Transporte</td>
+                        <td>30-40 anos</td>
+                        <td><span class="badge badge-smartwatch">SW-4412</span></td>
+                        <td><span class="badge badge-ativo">Ativo</span></td>
+                        <td><span class="qr-placeholder">QR-1002</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>OP-1003</strong></td>
+                        <td>Roberto Farias</td>
+                        <td>Manutenção Mecânica</td>
+                        <td>51-60 anos</td>
+                        <td><em>Nenhum</em></td>
+                        <td><span class="badge badge-ativo">Ativo</span></td>
+                        <td><span class="qr-placeholder">QR-1003</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const formCadastro = document.getElementById('formCadastro');
+        const tblBody = document.getElementById('tblBody');
+        const totalCadastrados = document.getElementById('totalCadastrados');
+        const txtBusca = document.getElementById('txtBusca');
+        let count = 3;
+
+        formCadastro.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const matId = document.getElementById('matId').value;
+            const nome = document.getElementById('nome').value;
+            const setor = document.getElementById('setor').value;
+            const faixaEtaria = document.getElementById('faixaEtaria').value + ' anos';
+            const smartwatchId = document.getElementById('smartwatchId').value || 'Nenhum';
+
+            count++;
+            const newRow = `
+                <tr>
+                    <td><strong>${matId}</strong></td>
+                    <td>${nome}</td>
+                    <td>${setor}</td>
+                    <td>${faixaEtaria}</td>
+                    <td>${smartwatchId !== 'Nenhum' ? `<span class="badge badge-smartwatch">${smartwatchId}</span>` : '<em>Nenhum</em>'}</td>
+                    <td><span class="badge badge-ativo">Ativo</span></td>
+                    <td><span class="qr-placeholder">QR-${matId}</span></td>
+                </tr>
+            `;
+
+            tblBody.insertAdjacentHTML('afterbegin', newRow);
+            totalCadastrados.innerText = count;
+            formCadastro.reset();
+            alert(`Colaborador ${nome} (${matId}) cadastrado com sucesso!`);
+        });
+
+        txtBusca.addEventListener('keyup', () => {
+            const term = txtBusca.value.toLowerCase();
+            const rows = tblBody.getElementsByTagName('tr');
+            Array.from(rows).forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(term) ? '' : 'none';
+            });
+        });
+
+        document.getElementById('btnImportarCsv').addEventListener('click', () => {
+            alert('Selecione o arquivo CSV do eSocial (S-2200) ou planilha modelo para importar em lote.');
+        });
+    </script>
+</body>
+</html>
+
