@@ -249,3 +249,39 @@ def process_srt_telemetry(data: SRTData):
         "status": "Sinal Verde", 
         "message": "Telemetria ocupacional registrada com sucesso."
     }
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import Optional
+
+app = FastAPI(title="ExcelSilience SRT API")
+
+# Modelo de dados da Telemetria do Wearable
+class TelemetryData(BaseModel):
+    hrv_rmssd_ms: float
+    resting_hr_bpm: int
+    sleep_score: int
+    spo2_percent: float
+    daily_stress_score: Optional[int] = None
+    intensity_minutes_today: Optional[int] = None
+    workout_type: Optional[str] = None
+    recovery_hours: Optional[int] = None
+
+class WearablePayload(BaseModel):
+    user_id: str
+    name: str
+    age_group: str
+    provider: str
+    device_id: str
+    telemetry: TelemetryData
+    timestamp: str
+
+# Endpoint que recebe o JSON enviado pelo Garmin ou Simulador
+@app.post("/api/v1/smartwatch/sync")
+async def sync_wearable(payload: WearablePayload):
+    # Aqui o motor recebe o JSON, processa e salva
+    return {
+        "status": "success",
+        "message": f"Telemetria de {payload.name} ({payload.provider}) processada com sucesso!",
+        "vsi_score": 88.5
+    }
