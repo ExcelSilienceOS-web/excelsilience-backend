@@ -190,19 +190,12 @@
     <script>
         const API_URL = 'https://excelsilience-backend.onrender.com/api/v1/smartwatch/sync';
 
-        // Registros demonstrativos iniciais + sincronia local
-        let allRecords = [
-            { timestamp: "09:30", company: "ExcelSilience Direct", name: "Flávio Veríssimo", whatsapp: "11999998888", sector: "Diretoria / C-Suite", reaction_ms: 633, veto_errors: 0, status: "GREEN" },
-            { timestamp: "09:25", company: "Osborne Construtora", name: "Carlos Mendes", whatsapp: "11988887777", sector: "Engenharia e Obras", reaction_ms: 710, veto_errors: 2, status: "YELLOW" },
-            { timestamp: "09:15", company: "Intergramed", name: "Operador Anônimo (4829)", whatsapp: "21977776666", sector: "Manutenção Operacional", reaction_ms: 580, veto_errors: 0, status: "GREEN" },
-            { timestamp: "08:50", company: "Osborne Construtora", name: "Operador Anônimo (1204)", whatsapp: "11966665555", sector: "Logística e Frotas", reaction_ms: 980, veto_errors: 4, status: "RED" }
-        ];
+        let allRecords = [];
 
         function initDashboard() {
             loadLocalStorageData();
-            updateEmpresaFilterOptions();
-            renderTable();
-            setInterval(fetchLatestData, 5000);
+            fetchLatestData();
+            setInterval(fetchLatestData, 5000); // Polling a cada 5s
         }
 
         function loadLocalStorageData() {
@@ -210,13 +203,45 @@
                 const localData = JSON.parse(localStorage.getItem('srt_live_records') || '[]');
                 if (localData && localData.length > 0) {
                     localData.forEach(item => {
-                        const exists = allRecords.some(r => r.whatsapp === item.whatsapp && r.timestamp === item.timestamp);
-                        if (!exists) {
-                            allRecords.unshift(item);
-                        }
+                        addRecordUnique(item);
                     });
                 }
             } catch (e) {}
+        }
+
+        async function fetchLatestData() {
+            try {
+                const res = await fetch(API_URL);
+                if (res.ok) {
+                    const data = await res.json();
+                    const records = Array.isArray(data) ? data : (data.records || data.data || []);
+                    records.forEach(r => {
+                        const rec = {
+                            timestamp: r.timestamp ? new Date(r.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--',
+                            company: r.company || 'ExcelSilience Direct',
+                            name: r.name || r.user_id || 'Operador',
+                            whatsapp: r.whatsapp || r.user_id || 'N/A',
+                            sector: r.sector || 'Operacional',
+                            reaction_ms: r.telemetry?.reaction_ms || r.reaction_ms || 0,
+                            veto_errors: r.telemetry?.veto_errors !== undefined ? r.telemetry.veto_errors : (r.veto_errors || 0),
+                            status: r.telemetry?.status || r.status || 'GREEN'
+                        };
+                        addRecordUnique(rec);
+                    });
+                }
+            } catch (e) {
+                console.log('Consulta API Render realizada.');
+            }
+
+            updateEmpresaFilterOptions();
+            renderTable();
+        }
+
+        function addRecordUnique(item) {
+            const exists = allRecords.some(r => r.whatsapp === item.whatsapp && r.timestamp === item.timestamp);
+            if (!exists) {
+                allRecords.unshift(item);
+            }
         }
 
         function updateEmpresaFilterOptions() {
@@ -276,12 +301,6 @@
             document.getElementById('cardVerde').innerText = verdeCount;
             document.getElementById('cardAmarelo').innerText = amareloCount;
             document.getElementById('cardVermelho').innerText = vermelhoCount;
-        }
-
-        async function fetchLatestData() {
-            loadLocalStorageData();
-            updateEmpresaFilterOptions();
-            renderTable();
         }
 
         window.onload = initDashboard;
