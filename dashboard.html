@@ -121,9 +121,10 @@
             cursor: pointer;
         }
         .status-msg {
-            font-size: 11px;
-            color: #38bdf8;
-            margin-left: 8px;
+            font-size: 12px;
+            color: #fbbf24;
+            margin-left: 10px;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -136,7 +137,7 @@
         </div>
         <div class="live-indicator">
             <div class="pulse-dot"></div>
-            <span id="apiStatusText">SINCRONIZAÇÃO ATIVA (Render API)</span>
+            <span id="apiStatusText">CONECTANDO AO BANCO...</span>
         </div>
     </div>
 
@@ -170,7 +171,7 @@
         </div>
         <div>
             <button onclick="fetchLatestData()" class="btn-refresh">🔄 Atualizar Dados</button>
-            <span id="syncMsg" class="status-msg"></span>
+            <span id="syncMsg" class="status-msg">Iniciando...</span>
         </div>
     </div>
 
@@ -201,33 +202,30 @@
         let allRecords = [];
 
         function formatTimestamp(raw) {
-            if (!raw) {
-                return new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            }
-            if (typeof raw === 'string' && raw.length === 5 && raw.includes(':')) {
-                return raw;
-            }
+            if (!raw) return new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            if (typeof raw === 'string' && raw.length === 5 && raw.includes(':')) return raw;
             try {
                 const d = new Date(raw);
-                if (!isNaN(d.getTime())) {
-                    return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                }
+                if (!isNaN(d.getTime())) return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
             } catch(e) {}
             return raw;
         }
 
         function initDashboard() {
             fetchLatestData();
-            setInterval(fetchLatestData, 4000); // Polling automático a cada 4s
+            setInterval(fetchLatestData, 6000);
         }
 
         async function fetchLatestData() {
             const syncMsg = document.getElementById('syncMsg');
-            if (syncMsg) syncMsg.innerText = 'Buscando...';
+            const statusText = document.getElementById('apiStatusText');
+
+            if (syncMsg) syncMsg.innerText = '⏳ Acordando Servidor Render (pode levar 30s)...';
 
             try {
+                // Timeout de 45 segundos para aguardar a inicialização do Render
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                const timeoutId = setTimeout(() => controller.abort(), 45000);
 
                 const res = await fetch(API_URL, { signal: controller.signal });
                 clearTimeout(timeoutId);
@@ -237,7 +235,7 @@
                     const records = Array.isArray(data) ? data : (data.records || data.data || []);
                     
                     if (Array.isArray(records)) {
-                        allRecords = []; // Sincroniza exatamente o que está no servidor
+                        allRecords = [];
                         records.forEach(r => {
                             const rec = {
                                 timestamp: formatTimestamp(r.timestamp || r.date_iso),
@@ -251,13 +249,13 @@
                             };
                             allRecords.push(rec);
                         });
-                        if (syncMsg) syncMsg.innerText = 'Conectado!';
+
+                        if (syncMsg) syncMsg.innerText = '✅ Conectado ao Render!';
+                        if (statusText) statusText.innerText = 'SINCRONIZAÇÃO ATIVA (Render API)';
                     }
-                } else {
-                    if (syncMsg) syncMsg.innerText = 'Aguardando Servidor...';
                 }
             } catch (e) {
-                if (syncMsg) syncMsg.innerText = 'Conectando...';
+                if (syncMsg) syncMsg.innerText = '⚠️ Servidor em repouso. Clique em Atualizar.';
             }
 
             updateEmpresaFilterOptions();
@@ -296,7 +294,7 @@
             }
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px; color:#94a3b8;">Aguardando recebimento de novos check-ins...</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:24px; color:#94a3b8;">Nenhum check-in registrado ainda nesta sessão.</td></tr>`;
                 document.getElementById('cardTotal').innerText = 0;
                 document.getElementById('cardVerde').innerText = 0;
                 document.getElementById('cardAmarelo').innerText = 0;
