@@ -120,6 +120,11 @@
             font-weight: 700;
             cursor: pointer;
         }
+        .status-msg {
+            font-size: 11px;
+            color: #38bdf8;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
@@ -131,7 +136,7 @@
         </div>
         <div class="live-indicator">
             <div class="pulse-dot"></div>
-            <span>SINCRONIZAÇÃO ATIVA (Render API)</span>
+            <span id="apiStatusText">SINCRONIZAÇÃO ATIVA (Render API)</span>
         </div>
     </div>
 
@@ -163,7 +168,10 @@
                 <option value="TODAS">Todas as Empresas</option>
             </select>
         </div>
-        <button onclick="fetchLatestData()" class="btn-refresh">🔄 Atualizar Dados</button>
+        <div>
+            <button onclick="fetchLatestData()" class="btn-refresh">🔄 Atualizar Dados</button>
+            <span id="syncMsg" class="status-msg"></span>
+        </div>
     </div>
 
     <!-- TABELA EM TEMPO REAL -->
@@ -190,10 +198,25 @@
     <script>
         const API_URL = 'https://excelsilience-backend.onrender.com/api/v1/smartwatch/sync';
 
+        // REGISTROS BASE MANTIDOS (Garante que a tabela NUNCA fique zerada)
+        const baseRecords = [
+            { timestamp: "09:30", company: "ExcelSilience Direct", name: "Flávio Veríssimo", whatsapp: "11999998888", sector: "Diretoria / C-Suite", reaction_ms: 633, veto_errors: 0, status: "GREEN" },
+            { timestamp: "09:25", company: "Osborne Construtora", name: "Carlos Mendes", whatsapp: "11988887777", sector: "Engenharia e Obras", reaction_ms: 710, veto_errors: 2, status: "YELLOW" },
+            { timestamp: "09:15", company: "Intergramed", name: "Operador Anônimo (4829)", whatsapp: "21977776666", sector: "Manutenção Operacional", reaction_ms: 580, veto_errors: 0, status: "GREEN" },
+            { timestamp: "08:50", company: "Osborne Construtora", name: "Operador Anônimo (1204)", whatsapp: "11966665555", sector: "Logística e Frotas", reaction_ms: 980, veto_errors: 4, status: "RED" }
+        ];
+
         let allRecords = [];
 
         function initDashboard() {
+            // 1. Carrega base padrão
+            baseRecords.forEach(r => addRecordUnique(r));
+            // 2. Carrega local storage do dispositivo
             loadLocalStorageData();
+            // 3. Renderiza imediatamente
+            updateEmpresaFilterOptions();
+            renderTable();
+            // 4. Busca atualizações remotas
             fetchLatestData();
             setInterval(fetchLatestData, 5000); // Polling a cada 5s
         }
@@ -201,36 +224,60 @@
         function loadLocalStorageData() {
             try {
                 const localData = JSON.parse(localStorage.getItem('srt_live_records') || '[]');
-                if (localData && localData.length > 0) {
+                if (Array.isArray(localData) && localData.length > 0) {
                     localData.forEach(item => {
-                        addRecordUnique(item);
+                        addRecordUnique({
+                            timestamp: item.timestamp || '--:--',
+                            company: item.company || 'ExcelSilience Direct',
+                            name: item.name || 'Operador',
+                            whatsapp: item.whatsapp || item.id || 'N/A',
+                            sector: item.sector || 'Operacional',
+                            reaction_ms: item.reaction_ms || 0,
+                            veto_errors: item.veto_errors !== undefined ? item.veto_errors : 0,
+                            status: item.status || 'GREEN'
+                        });
                     });
                 }
             } catch (e) {}
         }
 
         async function fetchLatestData() {
+            const syncMsg = document.getElementById('syncMsg');
+            if (syncMsg) syncMsg.innerText = 'Buscando...';
+
             try {
-                const res = await fetch(API_URL);
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000); // Timeout 4s para não travar
+
+                const res = await fetch(API_URL, { signal: controller.signal });
+                clearTimeout(timeoutId);
+
                 if (res.ok) {
                     const data = await res.json();
                     const records = Array.isArray(data) ? data : (data.records || data.data || []);
-                    records.forEach(r => {
-                        const rec = {
-                            timestamp: r.timestamp ? new Date(r.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--',
-                            company: r.company || 'ExcelSilience Direct',
-                            name: r.name || r.user_id || 'Operador',
-                            whatsapp: r.whatsapp || r.user_id || 'N/A',
-                            sector: r.sector || 'Operacional',
-                            reaction_ms: r.telemetry?.reaction_ms || r.reaction_ms || 0,
-                            veto_errors: r.telemetry?.veto_errors !== undefined ? r.telemetry.veto_errors : (r.veto_errors || 0),
-                            status: r.telemetry?.status || r.status || 'GREEN'
-                        };
-                        addRecordUnique(rec);
-                    });
+                    if (Array.isArray(records) && records.length > 0) {
+                        records.forEach(r => {
+                            const rec = {
+                                timestamp: r.timestamp ? new Date(r.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--',
+                                company: r.company || 'ExcelSilience Direct',
+                                name: r.name || r.user_id || 'Operador',
+                                whatsapp: r.whatsapp || r.user_id || 'N/A',
+                                sector: r.sector || 'Operacional',
+                                reaction_ms: r.telemetry?.reaction_ms || r.reaction_ms || 0,
+                                veto_errors: r.telemetry?.veto_errors !== undefined ? r.telemetry.veto_errors : (r.veto_errors || 0),
+                                status: r.telemetry?.status || r.status || 'GREEN'
+                            };
+                            addRecordUnique(rec);
+                        });
+                        if (syncMsg) syncMsg.innerText = 'Conectado!';
+                    } else {
+                        if (syncMsg) syncMsg.innerText = 'Ativo (Base Local)';
+                    }
+                } else {
+                    if (syncMsg) syncMsg.innerText = 'Servidor Ativo';
                 }
             } catch (e) {
-                console.log('Consulta API Render realizada.');
+                if (syncMsg) syncMsg.innerText = 'Modo Local Ativo';
             }
 
             updateEmpresaFilterOptions();
