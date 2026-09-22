@@ -3,338 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRT Bio-Health — Dashboard CCO Operacional</title>
+    <title>ExcelSilience SRT — CCO Operacional</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #0b0f19;
-            color: #e2e8f0;
-            padding: 24px;
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 20px;
         }
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
+            border-bottom: 1px solid #334155;
             padding-bottom: 16px;
-            border-bottom: 1px solid #1e293b;
-            flex-wrap: wrap;
-            gap: 12px;
         }
-        .title-area { display: flex; flex-direction: column; }
-        .title { font-size: 22px; font-weight: 800; color: #38bdf8; letter-spacing: 0.5px; }
-        .subtitle { font-size: 12px; color: #94a3b8; text-transform: uppercase; margin-top: 4px; }
-        .live-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid #10b981;
-            color: #34d399;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #10b981;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #10b981;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 0.4; }
-            50% { opacity: 1; }
-            100% { opacity: 0.4; }
-        }
+        .title h1 { font-size: 22px; color: #38bdf8; font-weight: 800; }
+        .title p { font-size: 12px; color: #94a3b8; text-transform: uppercase; }
 
-        .cards-grid {
+        .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 16px;
             margin-bottom: 24px;
         }
         .card {
-            background: #151c2c;
-            border: 1px solid #2a364f;
+            background: #1e293b;
+            border: 1px solid #334155;
             border-radius: 12px;
             padding: 16px;
             text-align: center;
         }
-        .card-lbl { font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: 700; }
-        .card-val { font-size: 26px; font-weight: 800; margin-top: 6px; }
-        .val-total { color: #38bdf8; }
-        .val-verde { color: #34d399; }
-        .val-amarelo { color: #fbbf24; }
-        .val-vermelho { color: #f87171; }
+        .card-num { font-size: 28px; font-weight: 800; margin-top: 4px; }
+        .card-green { color: #34d399; }
+        .card-yellow { color: #fbbf24; }
+        .card-red { color: #f87171; }
 
-        .filter-bar {
+        .controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #151c2c;
-            border: 1px solid #2a364f;
-            border-radius: 12px;
-            padding: 14px 20px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            margin-bottom: 16px;
             gap: 12px;
+            flex-wrap: wrap;
         }
-        .filter-group { display: flex; align-items: center; gap: 10px; }
-        .filter-group label { font-size: 12px; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
-        select {
-            padding: 8px 14px;
-            background: #0f172a;
+        select, button {
+            background: #1e293b;
+            color: #fff;
             border: 1px solid #334155;
-            border-radius: 6px;
-            color: #fff;
+            padding: 10px 14px;
+            border-radius: 8px;
             font-size: 13px;
-        }
-
-        .table-container {
-            background: #151c2c;
-            border: 1px solid #2a364f;
-            border-radius: 12px;
-            padding: 20px;
-            overflow-x: auto;
-        }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
-        th { padding: 12px 10px; color: #64748b; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #1e293b; }
-        td { padding: 14px 10px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
-        
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; display: inline-block; }
-        .badge-verde { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #10b981; }
-        .badge-amarelo { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid #f59e0b; }
-        .badge-vermelho { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid #ef4444; }
-
-        .btn-refresh {
-            background: #0284c7;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 12px;
             font-weight: 700;
-            cursor: pointer;
         }
-        .status-msg {
-            font-size: 12px;
-            color: #fbbf24;
-            margin-left: 10px;
-            font-weight: 600;
+        button { background: #0284c7; cursor: pointer; border: none; }
+        button:hover { background: #0369a1; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #334155;
         }
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 13px;
+            border-bottom: 1px solid #334155;
+        }
+        th { background: #0f172a; color: #94a3b8; text-transform: uppercase; font-size: 11px; }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            display: inline-block;
+        }
+        .pill-green { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
+        .pill-yellow { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
+        .pill-red { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div class="title-area">
-            <div class="title">EXCELSILIENCE SRT — PAINEL CCO OPERACIONAL</div>
-            <div class="subtitle">Monitoramento de Prontidão Biométrica & Veto Motor em Tempo Real</div>
-        </div>
-        <div class="live-indicator">
-            <div class="pulse-dot"></div>
-            <span id="apiStatusText">CONECTANDO AO BANCO...</span>
-        </div>
-    </div>
-
-    <!-- CARDS DE METRICAS -->
-    <div class="cards-grid">
-        <div class="card">
-            <div class="card-lbl">Total de Check-ins</div>
-            <div id="cardTotal" class="card-val val-total">0</div>
-        </div>
-        <div class="card">
-            <div class="card-lbl">🟢 Liberados (Verde)</div>
-            <div id="cardVerde" class="card-val val-verde">0</div>
-        </div>
-        <div class="card">
-            <div class="card-lbl">🟡 Atenção (Amarelo)</div>
-            <div id="cardAmarelo" class="card-val val-amarelo">0</div>
-        </div>
-        <div class="card">
-            <div class="card-lbl">🔴 Inaptos (Vermelho)</div>
-            <div id="cardVermelho" class="card-val val-vermelho">0</div>
-        </div>
-    </div>
-
-    <!-- BARRA DE FILTROS -->
-    <div class="filter-bar">
-        <div class="filter-group">
-            <label for="filterEmpresa">Filtrar por Empresa:</label>
-            <select id="filterEmpresa" onchange="renderTable()">
-                <option value="TODAS">Todas as Empresas</option>
-            </select>
+        <div class="title">
+            <h1>EXCELSILIENCE SRT — PAINEL CCO OPERACIONAL</h1>
+            <p>Monitoramento de Prontidão Biométrica & Veto Motor em Tempo Real</p>
         </div>
         <div>
-            <button onclick="fetchLatestData()" class="btn-refresh">🔄 Atualizar Dados</button>
-            <span id="syncMsg" class="status-msg">Iniciando...</span>
+            <button onclick="carregarDados()">🔄 Atualizar Dados Live</button>
         </div>
     </div>
 
-    <!-- TABELA EM TEMPO REAL -->
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Horário</th>
-                    <th>Empresa</th>
-                    <th>Usuário / Nome</th>
-                    <th>WhatsApp / ID</th>
-                    <th>Setor</th>
-                    <th>Reação (ms)</th>
-                    <th>Erros Veto</th>
-                    <th>Status de Prontidão</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody">
-                <!-- Linhas inseridas dinamicamente -->
-            </tbody>
-        </table>
+    <div class="metrics-grid">
+        <div class="card">
+            <p style="font-size:11px; color:#94a3b8;">Total de Check-ins</p>
+            <div class="card-num" id="mTotal">0</div>
+        </div>
+        <div class="card">
+            <p style="font-size:11px; color:#34d399;">🟢 Liberados (Verde)</p>
+            <div class="card-num card-green" id="mGreen">0</div>
+        </div>
+        <div class="card">
+            <p style="font-size:11px; color:#fbbf24;">🟡 Atenção (Amarelo)</p>
+            <div class="card-num card-yellow" id="mYellow">0</div>
+        </div>
+        <div class="card">
+            <p style="font-size:11px; color:#f87171;">🔴 Inaptos (Vermelho)</p>
+            <div class="card-num card-red" id="mRed">0</div>
+        </div>
     </div>
 
+    <div class="controls">
+        <div>
+            <label style="font-size:12px; color:#94a3b8; margin-right:8px;">Filtrar por Empresa:</label>
+            <select id="selFilter" onchange="renderTabela()">
+                <option value="ALL">Todas as Empresas</option>
+            </select>
+        </div>
+        <div id="lblStatus" style="font-size:12px; color:#38bdf8; font-weight:700;">Conectado ao Supabase Cloud Database</div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Horário</th>
+                <th>Empresa</th>
+                <th>Usuário / Nome</th>
+                <th>WhatsApp</th>
+                <th>Setor / Veículo</th>
+                <th>Reação (ms)</th>
+                <th>Erros Veto</th>
+                <th>Status de Prontidão</th>
+            </tr>
+        </thead>
+        <tbody id="tblBody">
+            <tr><td colspan="8" style="text-align:center; color:#94a3b8;">Carregando dados da nuvem...</td></tr>
+        </tbody>
+    </table>
+
     <script>
-        const API_URL = 'https://excelsilience-backend.onrender.com/api/v1/smartwatch/sync';
+        const SUPABASE_URL = 'https://uywfcrhryrzmhrukxgaf.supabase.co/rest/v1/srt_checkins?select=*&order=id.desc';
+        const SUPABASE_KEY = 'sb_publishable_o9kI6CRx6XzKNABTVef4Bw_dgaSyl3b';
 
-        let allRecords = [];
+        let rawData = [];
 
-        function formatTimestamp(raw) {
-            if (!raw) return new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            if (typeof raw === 'string' && raw.length === 5 && raw.includes(':')) return raw;
+        async function carregarDados() {
+            document.getElementById('lblStatus').innerText = '⏳ Atualizando...';
             try {
-                const d = new Date(raw);
-                if (!isNaN(d.getTime())) return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            } catch(e) {}
-            return raw;
-        }
-
-        function initDashboard() {
-            fetchLatestData();
-            setInterval(fetchLatestData, 6000);
-        }
-
-        async function fetchLatestData() {
-            const syncMsg = document.getElementById('syncMsg');
-            const statusText = document.getElementById('apiStatusText');
-
-            if (syncMsg) syncMsg.innerText = '⏳ Acordando Servidor Render (pode levar 30s)...';
-
-            try {
-                // Timeout de 45 segundos para aguardar a inicialização do Render
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 45000);
-
-                const res = await fetch(API_URL, { signal: controller.signal });
-                clearTimeout(timeoutId);
-
-                if (res.ok) {
-                    const data = await res.json();
-                    const records = Array.isArray(data) ? data : (data.records || data.data || []);
-                    
-                    if (Array.isArray(records)) {
-                        allRecords = [];
-                        records.forEach(r => {
-                            const rec = {
-                                timestamp: formatTimestamp(r.timestamp || r.date_iso),
-                                company: r.company || r.empresa || 'ExcelSilience Direct',
-                                name: r.name || r.nome || r.user_id || 'Operador',
-                                whatsapp: r.whatsapp || r.user_id || 'N/A',
-                                sector: r.sector || r.setor || 'Operacional',
-                                reaction_ms: r.reaction_ms || r.telemetry?.reaction_ms || 0,
-                                veto_errors: r.veto_errors !== undefined ? r.veto_errors : (r.telemetry?.veto_errors !== undefined ? r.telemetry.veto_errors : 0),
-                                status: r.status || r.telemetry?.status || 'GREEN'
-                            };
-                            allRecords.push(rec);
-                        });
-
-                        if (syncMsg) syncMsg.innerText = '✅ Conectado ao Render!';
-                        if (statusText) statusText.innerText = 'SINCRONIZAÇÃO ATIVA (Render API)';
+                const res = await fetch(SUPABASE_URL, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
                     }
+                });
+                if (res.ok) {
+                    rawData = await res.json();
+                    populaFiltroEmpresas();
+                    renderTabela();
+                    document.getElementById('lblStatus').innerText = '🟢 Nuvem Conectada (Live)';
+                } else {
+                    throw new Error('Erro ao buscar dados');
                 }
             } catch (e) {
-                if (syncMsg) syncMsg.innerText = '⚠️ Servidor em repouso. Clique em Atualizar.';
-            }
-
-            updateEmpresaFilterOptions();
-            renderTable();
-        }
-
-        function updateEmpresaFilterOptions() {
-            const filterSelect = document.getElementById('filterEmpresa');
-            const currentSelected = filterSelect ? filterSelect.value : 'TODAS';
-            
-            const empresasSet = new Set(['TODAS']);
-            allRecords.forEach(r => { if (r.company) empresasSet.add(r.company); });
-
-            if (filterSelect) {
-                filterSelect.innerHTML = '';
-                empresasSet.forEach(emp => {
-                    const opt = document.createElement('option');
-                    opt.value = emp;
-                    opt.innerText = emp === 'TODAS' ? 'Todas as Empresas' : emp;
-                    if (emp === currentSelected) opt.selected = true;
-                    filterSelect.appendChild(opt);
-                });
+                document.getElementById('lblStatus').innerText = '⚠️ Erro ao atualizar';
             }
         }
 
-        function renderTable() {
-            const filterElem = document.getElementById('filterEmpresa');
-            const selectedCompany = filterElem ? filterElem.value : 'TODAS';
-            const tbody = document.getElementById('tableBody');
-            if (!tbody) return;
+        function populaFiltroEmpresas() {
+            const sel = document.getElementById('selFilter');
+            const actualVal = sel.value;
+            const empresas = [...new Set(rawData.map(i => i.company))].filter(Boolean);
+
+            sel.innerHTML = '<option value="ALL">Todas as Empresas</option>';
+            empresas.forEach(emp => {
+                const opt = document.createElement('option');
+                opt.value = emp;
+                opt.innerText = emp;
+                sel.appendChild(opt);
+            });
+            sel.value = actualVal;
+        }
+
+        function renderTabela() {
+            const filter = document.getElementById('selFilter').value;
+            const filtered = filter === 'ALL' ? rawData : rawData.filter(i => i.company === filter);
+
+            let green = 0, yellow = 0, red = 0;
+            const tbody = document.getElementById('tblBody');
             tbody.innerHTML = '';
 
-            let filtered = allRecords;
-            if (selectedCompany !== 'TODAS') {
-                filtered = allRecords.filter(r => r.company === selectedCompany);
-            }
-
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:24px; color:#94a3b8;">Nenhum check-in registrado ainda nesta sessão.</td></tr>`;
-                document.getElementById('cardTotal').innerText = 0;
-                document.getElementById('cardVerde').innerText = 0;
-                document.getElementById('cardAmarelo').innerText = 0;
-                document.getElementById('cardVermelho').innerText = 0;
-                return;
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#94a3b8;">Nenhum check-in registrado ainda.</td></tr>';
+            } else {
+                filtered.forEach(row => {
+                    const st = row.status || 'GREEN';
+                    if (st === 'GREEN') green++;
+                    else if (st === 'YELLOW') yellow++;
+                    else if (st === 'RED') red++;
+
+                    let pillClass = 'pill-green';
+                    let pillText = '🟢 LIBERADO';
+                    if (st === 'YELLOW') { pillClass = 'pill-yellow'; pillText = '🟡 ATENÇÃO'; }
+                    if (st === 'RED') { pillClass = 'pill-red'; pillText = '🔴 INAPTO'; }
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><b>${row.timestamp || '--'}</b></td>
+                        <td>${row.company || '--'}</td>
+                        <td><b>${row.name || '--'}</b></td>
+                        <td>${row.whatsapp || '--'}</td>
+                        <td>${row.sector || '--'}</td>
+                        <td style="color:#38bdf8; font-weight:700;">${row.reaction_ms || 0} ms</td>
+                        <td style="color:#ef4444; font-weight:700;">${row.veto_errors || 0}</td>
+                        <td><span class="status-pill ${pillClass}">${pillText}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
             }
 
-            let verdeCount = 0, amareloCount = 0, vermelhoCount = 0;
-
-            filtered.forEach(r => {
-                if (r.status === 'GREEN') verdeCount++;
-                else if (r.status === 'YELLOW') amareloCount++;
-                else if (r.status === 'RED') vermelhoCount++;
-
-                const tr = document.createElement('tr');
-                
-                let badgeHTML = '<span class="badge badge-verde">🟢 LIBERADO</span>';
-                if (r.status === 'YELLOW') badgeHTML = '<span class="badge badge-amarelo">🟡 ATENÇÃO</span>';
-                if (r.status === 'RED') badgeHTML = '<span class="badge badge-vermelho">🔴 INAPTO</span>';
-
-                tr.innerHTML = `
-                    <td><strong>${r.timestamp || '--:--'}</strong></td>
-                    <td><span style="color:#38bdf8; font-weight:700;">${r.company || 'ExcelSilience Direct'}</span></td>
-                    <td>${r.name || 'Operador'}</td>
-                    <td><code>${r.whatsapp || 'N/A'}</code></td>
-                    <td>${r.sector || 'Operacional'}</td>
-                    <td><strong>${r.reaction_ms ? r.reaction_ms + ' ms' : 'N/A'}</strong></td>
-                    <td>${r.veto_errors !== undefined ? r.veto_errors : 0}</td>
-                    <td>${badgeHTML}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            document.getElementById('cardTotal').innerText = filtered.length;
-            document.getElementById('cardVerde').innerText = verdeCount;
-            document.getElementById('cardAmarelo').innerText = amareloCount;
-            document.getElementById('cardVermelho').innerText = vermelhoCount;
+            document.getElementById('mTotal').innerText = filtered.length;
+            document.getElementById('mGreen').innerText = green;
+            document.getElementById('mYellow').innerText = yellow;
+            document.getElementById('mRed').innerText = red;
         }
 
-        window.onload = initDashboard;
+        window.onload = () => {
+            carregarDados();
+            setInterval(carregarDados, 10000); // Auto-update a cada 10 segundos
+        };
     </script>
 </body>
 </html>
