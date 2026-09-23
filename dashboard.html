@@ -10,234 +10,156 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: #0f172a;
             color: #f8fafc;
-            padding: 20px;
+            padding: 24px;
+            min-height: 100vh;
         }
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
-            border-bottom: 1px solid #334155;
             padding-bottom: 16px;
+            border-bottom: 1px solid #334155;
         }
-        .title h1 { font-size: 22px; color: #38bdf8; font-weight: 800; letter-spacing: 0.5px; }
-        .title p { font-size: 12px; color: #94a3b8; text-transform: uppercase; margin-top: 4px; }
+        .header h1 { font-size: 22px; color: #38bdf8; font-weight: 800; }
+        .header p { font-size: 12px; color: #94a3b8; text-transform: uppercase; margin-top: 4px; }
+        
+        .btn-refresh {
+            background: #0284c7;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+        .btn-refresh:hover { background: #0369a1; }
 
-        .metrics-grid {
+        .kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 16px;
             margin-bottom: 24px;
         }
-        .card {
+        .kpi-card {
             background: #1e293b;
             border: 1px solid #334155;
             border-radius: 12px;
             padding: 16px;
-            text-align: center;
         }
-        .card-num { font-size: 26px; font-weight: 800; margin-top: 4px; }
-        .card-green { color: #34d399; }
-        .card-yellow { color: #fbbf24; }
-        .card-red { color: #f87171; }
-        .card-purple { color: #c084fc; }
+        .kpi-card h3 { font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; }
+        .kpi-card .val { font-size: 24px; font-weight: 800; }
 
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .filter-group { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-        select, button {
+        .table-container {
             background: #1e293b;
-            color: #fff;
             border: 1px solid #334155;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 700;
+            border-radius: 12px;
+            overflow-x: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
-        button { background: #0284c7; cursor: pointer; border: none; transition: 0.2s; }
-        button:hover { background: #0369a1; }
-
         table {
             width: 100%;
             border-collapse: collapse;
-            background: #1e293b;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #334155;
-        }
-        th, td {
-            padding: 12px 14px;
             text-align: left;
             font-size: 13px;
-            border-bottom: 1px solid #334155;
         }
-        th { background: #0f172a; color: #94a3b8; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
-        tr.clickable-row { cursor: pointer; transition: background 0.2s; }
-        tr.clickable-row:hover { background: rgba(56, 189, 248, 0.08); }
-
-        .status-pill {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 800;
-            display: inline-block;
-        }
-        .pill-green { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
-        .pill-yellow { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
-        .pill-red { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
-
-        .vetor-tag {
-            font-size: 11px;
+        th {
+            background: #0f172a;
+            color: #94a3b8;
             font-weight: 700;
-            padding: 4px 8px;
-            border-radius: 6px;
+            padding: 14px 16px;
+            border-bottom: 1px solid #334155;
+            text-transform: uppercase;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #334155;
+            white-space: nowrap;
+        }
+        tr:hover { background: #26334d; }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 11px;
             display: inline-block;
         }
-        .v-verde { color: #34d399; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); }
-        .v-amarelo { color: #fbbf24; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); }
-        .v-vermelho-inibicao { color: #f87171; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); }
-        .v-vermelho-sono { color: #c084fc; background: rgba(192, 132, 252, 0.15); border: 1px solid rgba(192, 132, 252, 0.4); }
+        .badge-green { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
+        .badge-yellow { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
+        .badge-red { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
 
-        /* MODAL FICHA TÉCNICA */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: #1e293b;
-            border: 1px solid #38bdf8;
-            border-radius: 16px;
-            max-width: 580px;
-            width: 100%;
-            padding: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-            position: relative;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #334155;
-            padding-bottom: 12px;
-            margin-bottom: 16px;
-        }
-        .modal-header h2 { font-size: 18px; color: #38bdf8; font-weight: 800; }
-        .close-btn { background: none; border: none; color: #94a3b8; font-size: 22px; cursor: pointer; }
-        .close-btn:hover { color: #fff; }
-
-        .modal-body p { font-size: 13px; color: #cbd5e1; margin-bottom: 8px; line-height: 1.5; }
-        .modal-section { background: #0f172a; padding: 14px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 14px; }
-        .modal-section h4 { font-size: 11px; color: #38bdf8; text-transform: uppercase; margin-bottom: 8px; font-weight: 800; letter-spacing: 0.5px; }
+        .tag-biometria { color: #34d399; font-weight: 700; font-size: 12px; }
+        .tag-voz { color: #38bdf8; font-weight: 700; font-size: 12px; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div class="title">
+        <div>
             <h1>EXCELSILIENCE SRT — CCO VETO & READINESS INTELLIGENCE</h1>
             <p>Telemetria de Prontidão Operacional & Triagem Biométrica Preventiva (NR-01 / NR-17)</p>
         </div>
-        <div>
-            <button onclick="carregarDados()">🔄 Atualizar Dados Live</button>
+        <button class="btn-refresh" onclick="fetchData()">🔄 Atualizar Dados Live</button>
+    </div>
+
+    <!-- CARDS DE KPI -->
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <h3>Total Check-ins</h3>
+            <div class="val" id="kpiTotal" style="color:#fff;">0</div>
+        </div>
+        <div class="kpi-card">
+            <h3>🟢 Liberados</h3>
+            <div class="val" id="kpiGreen" style="color:#34d399;">0</div>
+        </div>
+        <div class="kpi-card">
+            <h3>🟡 Sobrecarga / Estresse</h3>
+            <div class="val" id="kpiYellow" style="color:#fbbf24;">0</div>
+        </div>
+        <div class="kpi-card">
+            <h3>🔴 Inibição Neuromotora</h3>
+            <div class="val" id="kpiRed" style="color:#f87171;">0</div>
         </div>
     </div>
 
-    <div class="metrics-grid">
-        <div class="card">
-            <p style="font-size:11px; color:#94a3b8;">Total Check-ins</p>
-            <div class="card-num" id="mTotal">0</div>
-        </div>
-        <div class="card">
-            <p style="font-size:11px; color:#34d399;">🟢 Liberados</p>
-            <div class="card-num card-green" id="mGreen">0</div>
-        </div>
-        <div class="card">
-            <p style="font-size:11px; color:#fbbf24;">🟡 Sobrecarga / Estresse</p>
-            <div class="card-num card-yellow" id="mYellow">0</div>
-        </div>
-        <div class="card">
-            <p style="font-size:11px; color:#f87171;">🔴 Inibição Neuromotora</p>
-            <div class="card-num card-red" id="mRedInibicao">0</div>
-        </div>
-        <div class="card">
-            <p style="font-size:11px; color:#c084fc;">🟣 Privação de Sono</p>
-            <div class="card-num card-purple" id="mRedSono">0</div>
-        </div>
-    </div>
-
-    <div class="controls">
-        <div class="filter-group">
-            <div>
-                <label style="font-size:11px; color:#94a3b8; display:block; margin-bottom:4px;">Empresa:</label>
-                <select id="selFilter" onchange="renderTabela()">
-                    <option value="ALL">Todas as Empresas</option>
-                </select>
-            </div>
-            <div>
-                <label style="font-size:11px; color:#94a3b8; display:block; margin-bottom:4px;">Diagnóstico / Vetor:</label>
-                <select id="selVetor" onchange="renderTabela()">
-                    <option value="ALL">Todos os Diagnósticos</option>
-                    <option value="INIBICAO">🔴 Disfunção de Controle Inibitório</option>
-                    <option value="ESTRESSE">🟡 Sobrecarga Autonômica (Estresse/Fadiga)</option>
-                    <option value="SONO">🟣 Privação de Sono / Exaustão</option>
-                    <option value="VERDE">🟢 Homeostase Preservada</option>
-                </select>
-            </div>
-        </div>
-        <div id="lblStatus" style="font-size:12px; color:#38bdf8; font-weight:700;">🟢 Conectado ao Supabase Live</div>
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Horário</th>
-                <th>Empresa</th>
-                <th>Condutor / Nome</th>
-                <th>Setor / Veículo</th>
-                <th>Reação (ms)</th>
-                <th>Erros Veto</th>
-                <th>Status</th>
-                <th>Motivo Técnico do Veto / Vetor Biométrico</th>
-            </tr>
-        </thead>
-        <tbody id="tblBody">
-            <tr><td colspan="8" style="text-align:center; color:#94a3b8;">Carregando dados da nuvem...</td></tr>
-        </tbody>
-    </table>
-
-    <!-- MODAL DE FICHA DE TELEMETRIA -->
-    <div id="modalFicha" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>📋 Ficha de Telemetria Operacional</h2>
-                <button class="close-btn" onclick="fecharModal()">✕</button>
-            </div>
-            <div class="modal-body" id="modalBody">
-                <!-- Conteúdo dinâmico -->
-            </div>
-        </div>
+    <!-- TABELA COMPLETA COM AS NOVAS COLUNAS -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Horário</th>
+                    <th>Empresa</th>
+                    <th>Condutor / Nome</th>
+                    <th>📸 Biometria Facial</th>
+                    <th>🎙️ Análise de Voz</th>
+                    <th>Setor / Veículo</th>
+                    <th>Reação (ms)</th>
+                    <th>Erros Veto</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td colspan="9" style="text-align:center; padding:24px; color:#94a3b8;">
+                        Carregando dados da nuvem Supabase...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <script>
         const SUPABASE_URL = 'https://uywfcrhryrzmhrukxgaf.supabase.co/rest/v1/srt_checkins?select=*&order=id.desc';
         const SUPABASE_KEY = 'sb_publishable_o9kI6CRx6XzKNABTVef4Bw_dgaSyl3b';
 
-        let rawData = [];
-
-        async function carregarDados() {
-            document.getElementById('lblStatus').innerText = '⏳ Atualizando...';
+        async function fetchData() {
+            const tbody = document.getElementById('tableBody');
+            
             try {
                 const res = await fetch(SUPABASE_URL, {
                     headers: {
@@ -245,180 +167,60 @@
                         'Authorization': `Bearer ${SUPABASE_KEY}`
                     }
                 });
-                if (res.ok) {
-                    rawData = await res.json();
-                    populaFiltroEmpresas();
-                    renderTabela();
-                    document.getElementById('lblStatus').innerText = '🟢 Nuvem Conectada (Live)';
-                } else {
-                    throw new Error('Erro ao buscar dados');
+
+                if (!res.ok) throw new Error('Falha ao conectar no Supabase');
+                
+                const data = await res.json();
+                
+                let total = data.length;
+                let green = 0, yellow = 0, red = 0;
+
+                if (total === 0) {
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:24px; color:#94a3b8;">Nenhum registro encontrado no Supabase.</td></tr>`;
+                    return;
                 }
-            } catch (e) {
-                document.getElementById('lblStatus').innerText = '⚠️ Erro ao atualizar';
-            }
-        }
 
-        function classificarVetor(ms, errors, status) {
-            if (status === 'GREEN' || (ms <= 700 && errors === 0)) {
-                return {
-                    tipo: 'VERDE',
-                    rotulo: '🟢 Homeostase Preservada',
-                    tagClass: 'v-verde',
-                    causaTecnica: 'Controle Neuromotor & Foco Estáveis',
-                    descricaoMedica: 'Parâmetros biométricos de velocidade e inibição dentro da zona ideal.',
-                    acaoSESMT: 'Liberado para operação padrão de risco elevado.'
-                };
-            }
+                tbody.innerHTML = '';
 
-            if (errors >= 2) {
-                return {
-                    tipo: 'INIBICAO',
-                    rotulo: '🔴 Disfunção de Controle Inibitório',
-                    tagClass: 'v-vermelho-inibicao',
-                    causaTecnica: 'Inibição Neuromotora Central & Dismetria Visuomotora',
-                    descricaoMedica: 'Perda temporária de controle de impulsos e veto motor (Dispadronização Oculomotora e Reflexa do SNC).',
-                    acaoSESMT: 'VETO OPERACIONAL IMEDIATO. Afastamento preventivo do posto de risco / Encaminhamento ao SESMT / Medicina do Trabalho.'
-                };
-            }
+                data.forEach(row => {
+                    if (row.status === 'GREEN') green++;
+                    else if (row.status === 'YELLOW') yellow++;
+                    else if (row.status === 'RED') red++;
 
-            if (ms > 950) {
-                return {
-                    tipo: 'SONO',
-                    rotulo: '🟣 Privação de Sono / Exaustão',
-                    tagClass: 'v-vermelho-sono',
-                    causaTecnica: 'Sincronia Neurofisiológica Degradada (Latência Aguda)',
-                    descricaoMedica: 'Saturação neuromotora por privação severa de sono ou episódios de micro-sono (Desaceleração Reflexa).',
-                    acaoSESMT: 'VETO OPERACIONAL. Repouso compulsório e reavaliação de escala de trabalho.'
-                };
-            }
+                    let badgeHtml = '<span class="badge badge-green">🟢 LIBERADO</span>';
+                    if (row.status === 'YELLOW') badgeHtml = '<span class="badge badge-yellow">🟡 PAUSA 15 MIN</span>';
+                    if (row.status === 'RED') badgeHtml = '<span class="badge badge-red">🔴 VETO PRESENCIAL</span>';
 
-            return {
-                tipo: 'ESTRESSE',
-                rotulo: '🟡 Sobrecarga Autonômica',
-                tagClass: 'v-amarelo',
-                causaTecnica: 'Fadiga Cognitiva Aguda & Sobrecarga Simpática',
-                descricaoMedica: 'Aumento da latência de processamento mental induzida por estresse ocupacional / desgaste crônico.',
-                acaoSESMT: 'PAUSA TÁTICA de 15 a 30 minutos com hidratação e reteste antes de assumir operação.'
-            };
-        }
-
-        function populaFiltroEmpresas() {
-            const sel = document.getElementById('selFilter');
-            const actualVal = sel.value;
-            const empresas = [...new Set(rawData.map(i => i.company))].filter(Boolean);
-
-            sel.innerHTML = '<option value="ALL">Todas as Empresas</option>';
-            empresas.forEach(emp => {
-                const opt = document.createElement('option');
-                opt.value = emp;
-                opt.innerText = emp;
-                sel.appendChild(opt);
-            });
-            sel.value = actualVal;
-        }
-
-        function renderTabela() {
-            const fEmpresa = document.getElementById('selFilter').value;
-            const fVetor = document.getElementById('selVetor').value;
-
-            let filtered = rawData;
-            if (fEmpresa !== 'ALL') filtered = filtered.filter(i => i.company === fEmpresa);
-
-            let green = 0, yellow = 0, redInibicao = 0, redSono = 0;
-            const tbody = document.getElementById('tblBody');
-            tbody.innerHTML = '';
-
-            const listToRender = [];
-
-            filtered.forEach(row => {
-                const vetor = classificarVetor(row.reaction_ms || 0, row.veto_errors || 0, row.status || 'GREEN');
-
-                if (vetor.tipo === 'VERDE') green++;
-                if (vetor.tipo === 'ESTRESSE') yellow++;
-                if (vetor.tipo === 'INIBICAO') redInibicao++;
-                if (vetor.tipo === 'SONO') redSono++;
-
-                if (fVetor !== 'ALL' && vetor.tipo !== fVetor) return;
-
-                listToRender.push({ row, vetor });
-            });
-
-            if (listToRender.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#94a3b8;">Nenhum registro encontrado para este filtro.</td></tr>';
-            } else {
-                listToRender.forEach(({ row, vetor }) => {
-                    const st = row.status || 'GREEN';
-                    let pillClass = 'pill-green', pillText = '🟢 LIBERADO';
-                    if (st === 'YELLOW') { pillClass = 'pill-yellow'; pillText = '🟡 ATENÇÃO'; }
-                    if (st === 'RED') { pillClass = 'pill-red'; pillText = '🔴 INAPTO'; }
+                    const confirmacao = row.driver_confirmation || '✅ Confirmado (Biometria Facial)';
+                    const voz = row.vsi_status || '🟢 Voz Estável (VSI OK)';
 
                     const tr = document.createElement('tr');
-                    tr.className = 'clickable-row';
-                    tr.onclick = () => abrirModal(row, vetor);
-
                     tr.innerHTML = `
-                        <td><b>${row.timestamp || '--'}</b></td>
-                        <td>${row.company || '--'}</td>
-                        <td><b>${row.name || '--'}</b></td>
+                        <td style="font-weight:700; color:#38bdf8;">${row.timestamp || '--'}</td>
+                        <td><b>${row.company || '--'}</b></td>
+                        <td>${row.name || '--'}</td>
+                        <td class="tag-biometria">${confirmacao}</td>
+                        <td class="tag-voz">${voz}</td>
                         <td>${row.sector || '--'}</td>
-                        <td style="color:#38bdf8; font-weight:700;">${row.reaction_ms || 0} ms</td>
-                        <td style="color:#ef4444; font-weight:700;">${row.veto_errors || 0}</td>
-                        <td><span class="status-pill ${pillClass}">${pillText}</span></td>
-                        <td><span class="vetor-tag ${vetor.tagClass}">${vetor.rotulo}</span></td>
+                        <td><b>${row.reaction_ms || 0}</b> ms</td>
+                        <td style="color:${row.veto_errors > 0 ? '#f87171' : '#cbd5e1'}; font-weight:700;">${row.veto_errors || 0}</td>
+                        <td>${badgeHtml}</td>
                     `;
                     tbody.appendChild(tr);
                 });
+
+                document.getElementById('kpiTotal').innerText = total;
+                document.getElementById('kpiGreen').innerText = green;
+                document.getElementById('kpiYellow').innerText = yellow;
+                document.getElementById('kpiRed').innerText = red;
+
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:24px; color:#f87171;">⚠️ Erro ao carregar dados: ${err.message}</td></tr>`;
             }
-
-            document.getElementById('mTotal').innerText = filtered.length;
-            document.getElementById('mGreen').innerText = green;
-            document.getElementById('mYellow').innerText = yellow;
-            document.getElementById('mRedInibicao').innerText = redInibicao;
-            document.getElementById('mRedSono').innerText = redSono;
         }
 
-        function abrirModal(row, vetor) {
-            const modalBody = document.getElementById('modalBody');
-            modalBody.innerHTML = `
-                <div class="modal-section">
-                    <h4>👤 Identificação do Condutor</h4>
-                    <p><b>Nome:</b> ${row.name || 'N/A'}</p>
-                    <p><b>Empresa:</b> ${row.company || 'N/A'} | <b>Setor/Veículo:</b> ${row.sector || 'N/A'}</p>
-                    <p><b>WhatsApp ID:</b> ${row.whatsapp || 'N/A'} | <b>Horário do Check-in:</b> ${row.timestamp || 'N/A'}</p>
-                </div>
-
-                <div class="modal-section">
-                    <h4>📊 Telemetria de Resposta Motora</h4>
-                    <p><b>Tempo Médio de Reação:</b> <span style="color:#38bdf8; font-weight:800;">${row.reaction_ms || 0} ms</span></p>
-                    <p><b>Erros de Veto Motor (Inibição de Resposta):</b> <span style="color:#ef4444; font-weight:800;">${row.veto_errors || 0} erros</span></p>
-                </div>
-
-                <div class="modal-section" style="border-color:${vetor.tipo === 'INIBICAO' ? '#ef4444' : '#38bdf8'};">
-                    <h4>🧬 Diagnóstico Biométrico de Prontidão</h4>
-                    <p><b>Vetor Identificado:</b> <span class="vetor-tag ${vetor.tagClass}">${vetor.rotulo}</span></p>
-                    <p><b>Substrato Neurobiológico:</b> ${vetor.causaTecnica}</p>
-                    <p><b>Avaliação Clínica Preventiva:</b> ${vetor.descricaoMedica}</p>
-                </div>
-
-                <div class="modal-section" style="background:rgba(2, 132, 199, 0.1); border-color:#0284c7;">
-                    <h4 style="color:#38bdf8;">🛡️ Diretriz de Conduta do CCO / SESMT (NR-01 & NR-17)</h4>
-                    <p style="font-weight:700; color:#fff;">${vetor.acaoSESMT}</p>
-                    <p style="font-size:11px; color:#94a3b8; margin-top:8px;">
-                        * O presente diagnóstico tem caráter preventivo e não-punitivo, em total conformidade com a NR-01 (PGR), NR-17 (Ergonomia) e LGPD.
-                    </p>
-                </div>
-            `;
-            document.getElementById('modalFicha').style.display = 'flex';
-        }
-
-        function fecharModal() {
-            document.getElementById('modalFicha').style.display = 'none';
-        }
-
-        window.onload = () => {
-            carregarDados();
-            setInterval(carregarDados, 10000);
-        };
+        window.onload = fetchData;
+        setInterval(fetchData, 10000); // Atualização automática a cada 10 segundos
     </script>
 </body>
 </html>
