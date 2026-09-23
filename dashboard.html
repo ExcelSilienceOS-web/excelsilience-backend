@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExcelSilience SRT — CCO Veto & Readiness Intelligence</title>
+    <title>ExcelSilience SRT — CCO Dashboard</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -11,7 +11,6 @@
             background: #0f172a;
             color: #f8fafc;
             padding: 24px;
-            min-height: 100vh;
         }
         .header {
             display: flex;
@@ -22,42 +21,45 @@
             border-bottom: 1px solid #334155;
         }
         .header h1 { font-size: 22px; color: #38bdf8; font-weight: 800; }
-        .header p { font-size: 12px; color: #94a3b8; text-transform: uppercase; margin-top: 4px; }
-        
-        .btn-refresh {
+        .header p { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+        .refresh-btn {
             background: #0284c7;
             color: #fff;
             border: none;
-            padding: 10px 18px;
+            padding: 10px 16px;
             border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
-            font-size: 13px;
             transition: 0.2s;
         }
-        .btn-refresh:hover { background: #0369a1; }
+        .refresh-btn:hover { background: #0369a1; }
 
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
             margin-bottom: 24px;
         }
         .kpi-card {
             background: #1e293b;
             border: 1px solid #334155;
-            border-radius: 12px;
             padding: 16px;
+            border-radius: 12px;
+            text-align: center;
         }
-        .kpi-card h3 { font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; }
-        .kpi-card .val { font-size: 24px; font-weight: 800; }
+        .kpi-card h3 { font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; }
+        .kpi-card .number { font-size: 28px; font-weight: 800; }
+
+        .kpi-green { color: #34d399; }
+        .kpi-yellow { color: #fbbf24; }
+        .kpi-red { color: #f87171; }
+        .kpi-total { color: #38bdf8; }
 
         .table-container {
             background: #1e293b;
             border: 1px solid #334155;
             border-radius: 12px;
             overflow-x: auto;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
         table {
             width: 100%;
@@ -68,87 +70,77 @@
         th {
             background: #0f172a;
             color: #94a3b8;
-            font-weight: 700;
-            padding: 14px 16px;
-            border-bottom: 1px solid #334155;
-            text-transform: uppercase;
+            padding: 12px 16px;
             font-size: 11px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #334155;
             white-space: nowrap;
         }
         td {
-            padding: 14px 16px;
+            padding: 12px 16px;
             border-bottom: 1px solid #334155;
             white-space: nowrap;
         }
-        tr:hover { background: #26334d; }
+        tr:hover { background: rgba(51, 65, 85, 0.3); }
 
         .badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 6px;
             font-size: 11px;
+            font-weight: 800;
             display: inline-block;
         }
         .badge-green { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
         .badge-yellow { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
         .badge-red { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
-
-        .tag-biometria { color: #34d399; font-weight: 700; font-size: 12px; }
-        .tag-voz { color: #38bdf8; font-weight: 700; font-size: 12px; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <div>
-            <h1>EXCELSILIENCE SRT — CCO VETO & READINESS INTELLIGENCE</h1>
-            <p>Telemetria de Prontidão Operacional & Triagem Biométrica Preventiva (NR-01 / NR-17)</p>
+            <h1>EXCELSILIENCE SRT — PAINEL CCO</h1>
+            <p>Telemetria de Prontidão Biométrica e Gestão de Riscos em Tempo Real</p>
         </div>
-        <button class="btn-refresh" onclick="fetchData()">🔄 Atualizar Dados Live</button>
+        <button class="refresh-btn" onclick="fetchData()">🔄 Atualizar Dados</button>
     </div>
 
-    <!-- CARDS DE KPI -->
     <div class="kpi-grid">
         <div class="kpi-card">
-            <h3>Total Check-ins</h3>
-            <div class="val" id="kpiTotal" style="color:#fff;">0</div>
+            <h3>Total de Check-ins</h3>
+            <div class="number kpi-total" id="kpiTotal">0</div>
         </div>
         <div class="kpi-card">
             <h3>🟢 Liberados</h3>
-            <div class="val" id="kpiGreen" style="color:#34d399;">0</div>
+            <div class="number kpi-green" id="kpiGreen">0</div>
         </div>
         <div class="kpi-card">
-            <h3>🟡 Sobrecarga / Estresse</h3>
-            <div class="val" id="kpiYellow" style="color:#fbbf24;">0</div>
+            <h3>🟡 Atenção (Pausa)</h3>
+            <div class="number kpi-yellow" id="kpiYellow">0</div>
         </div>
         <div class="kpi-card">
-            <h3>🔴 Inibição Neuromotora</h3>
-            <div class="val" id="kpiRed" style="color:#f87171;">0</div>
+            <h3>🔴 Inaptos (Veto CCO)</h3>
+            <div class="number kpi-red" id="kpiRed">0</div>
         </div>
     </div>
 
-    <!-- TABELA COMPLETA COM AS NOVAS COLUNAS -->
     <div class="table-container">
         <table>
             <thead>
                 <tr>
                     <th>Horário</th>
+                    <th>Condutor</th>
                     <th>Empresa</th>
-                    <th>Condutor / Nome</th>
+                    <th>Setor / Placa</th>
                     <th>📸 Biometria Facial</th>
                     <th>🎙️ Análise de Voz</th>
-                    <th>Setor / Veículo</th>
                     <th>Reação (ms)</th>
                     <th>Erros Veto</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
-                <tr>
-                    <td colspan="9" style="text-align:center; padding:24px; color:#94a3b8;">
-                        Carregando dados da nuvem Supabase...
-                    </td>
-                </tr>
+                <tr><td colspan="9" style="text-align:center; color:#94a3b8; padding:24px;">Carregando dados do Supabase...</td></tr>
             </tbody>
         </table>
     </div>
@@ -159,7 +151,6 @@
 
         async function fetchData() {
             const tbody = document.getElementById('tableBody');
-            
             try {
                 const res = await fetch(SUPABASE_URL, {
                     headers: {
@@ -167,60 +158,57 @@
                         'Authorization': `Bearer ${SUPABASE_KEY}`
                     }
                 });
-
-                if (!res.ok) throw new Error('Falha ao conectar no Supabase');
-                
                 const data = await res.json();
-                
-                let total = data.length;
-                let green = 0, yellow = 0, red = 0;
 
-                if (total === 0) {
-                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:24px; color:#94a3b8;">Nenhum registro encontrado no Supabase.</td></tr>`;
+                if (!Array.isArray(data) || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; color:#94a3b8; padding:24px;">Nenhum registro encontrado no Supabase.</td></tr>';
                     return;
                 }
 
-                tbody.innerHTML = '';
-
-                data.forEach(row => {
-                    if (row.status === 'GREEN') green++;
-                    else if (row.status === 'YELLOW') yellow++;
-                    else if (row.status === 'RED') red++;
-
-                    let badgeHtml = '<span class="badge badge-green">🟢 LIBERADO</span>';
-                    if (row.status === 'YELLOW') badgeHtml = '<span class="badge badge-yellow">🟡 PAUSA 15 MIN</span>';
-                    if (row.status === 'RED') badgeHtml = '<span class="badge badge-red">🔴 VETO PRESENCIAL</span>';
-
-                    const confirmacao = row.driver_confirmation || '✅ Confirmado (Biometria Facial)';
-                    const voz = row.vsi_status || '🟢 Voz Estável (VSI OK)';
-
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td style="font-weight:700; color:#38bdf8;">${row.timestamp || '--'}</td>
-                        <td><b>${row.company || '--'}</b></td>
-                        <td>${row.name || '--'}</td>
-                        <td class="tag-biometria">${confirmacao}</td>
-                        <td class="tag-voz">${voz}</td>
-                        <td>${row.sector || '--'}</td>
-                        <td><b>${row.reaction_ms || 0}</b> ms</td>
-                        <td style="color:${row.veto_errors > 0 ? '#f87171' : '#cbd5e1'}; font-weight:700;">${row.veto_errors || 0}</td>
-                        <td>${badgeHtml}</td>
-                    `;
-                    tbody.appendChild(tr);
+                // Atualização dos Cards de KPI
+                let green = 0, yellow = 0, red = 0;
+                data.forEach(r => {
+                    if (r.status === 'GREEN') green++;
+                    else if (r.status === 'YELLOW') yellow++;
+                    else if (r.status === 'RED') red++;
                 });
 
-                document.getElementById('kpiTotal').innerText = total;
+                document.getElementById('kpiTotal').innerText = data.length;
                 document.getElementById('kpiGreen').innerText = green;
                 document.getElementById('kpiYellow').innerText = yellow;
                 document.getElementById('kpiRed').innerText = red;
 
+                // Montagem da Tabela com as Novas Colunas
+                tbody.innerHTML = data.map(r => {
+                    let badge = '<span class="badge badge-green">🟢 LIBERADO</span>';
+                    if (r.status === 'YELLOW') badge = '<span class="badge badge-yellow">🟡 ATENÇÃO</span>';
+                    if (r.status === 'RED') badge = '<span class="badge badge-red">🔴 INAPTO (VETO)</span>';
+
+                    const faceStatus = r.driver_confirmation || '✅ Confirmado (Nominal)';
+                    const voiceStatus = r.vsi_status || '🟢 Voz Estável';
+
+                    return `
+                        <tr>
+                            <td><b>${r.timestamp || '--'}</b></td>
+                            <td><b>${r.name || '--'}</b><br><small style="color:#94a3b8;">${r.whatsapp || ''}</small></td>
+                            <td>${r.company || '--'}</td>
+                            <td>${r.sector || '--'}</td>
+                            <td style="color:#34d399; font-weight:600;">${faceStatus}</td>
+                            <td style="color:#38bdf8; font-weight:600;">${voiceStatus}</td>
+                            <td style="font-weight:700; color:#38bdf8;">${r.reaction_ms || 0} ms</td>
+                            <td style="font-weight:700; color:#ef4444;">${r.veto_errors || 0}</td>
+                            <td>${badge}</td>
+                        </tr>
+                    `;
+                }).join('');
+
             } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:24px; color:#f87171;">⚠️ Erro ao carregar dados: ${err.message}</td></tr>`;
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; color:#f87171; padding:24px;">Erro ao carregar dados do CCO. Verifique a conexão com o Supabase.</td></tr>';
             }
         }
 
-        window.onload = fetchData;
-        setInterval(fetchData, 10000); // Atualização automática a cada 10 segundos
+        fetchData();
+        setInterval(fetchData, 10000); // Atualiza automaticamente a cada 10 segundos
     </script>
 </body>
 </html>
